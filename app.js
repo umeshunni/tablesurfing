@@ -49,7 +49,8 @@ app.post('/sms', function(req, res){
 		// Do the action based on the body
 		
 	})
-	res.send("<Request><Sms>Thank you for texting!</Sms></Request>")
+	res.contentType('xml')
+	res.send("<?xml version='1.0' encoding='UTF-8'?><Request><Sms>Thank you for texting!</Sms></Request>")
 })
 
 
