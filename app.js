@@ -5,6 +5,7 @@
 
 var express = require('express')
   , routes = require('./routes')
+  , hashlib = require('./lib/support/hashlib/build/default')
   , mongoose = require('mongoose')
   , twilio = require('./twilio');
 
@@ -26,6 +27,10 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
+  app.use(require('facebook').Facebook, {
+        apiKey: '176941975674666', 
+        apiSecret: '36095cf93f7aa776e25b90a4c29e4b64'
+    })
 });
 
 app.configure('development', function(){
@@ -111,6 +116,48 @@ app.get('/event', function (req, res) {
 	})
 })
 
+
+// Called to get information about the current authenticated user
+app.get('/fbSession', function(){
+  var fbSession = this.fbSession()
+
+  if(fbSession) {
+    // Here would be a nice place to lookup userId in the database
+    // and supply some additional information for the client to use
+  }
+
+  // The client will only assume authentication was OK if userId exists
+  this.contentType('json')
+  this.halt(200, JSON.stringify(fbSession || {}))
+})
+
+// Called after a successful FB Connect
+app.post('/fbSession', function() {
+  var fbSession = this.fbSession() // Will return null if verification was unsuccesful
+
+  if(fbSession) {
+    // Now that we have a Facebook Session, we might want to store this new user in the db
+    // Also, in this.params there is additional information about the user (name, pic, first_name, etc)
+    // Note of warning: unlike the data in fbSession, this additional information has not been verified
+    fbSession.first_name = this.params.post['first_name']
+  }
+
+  this.contentType('json')
+  this.halt(200, JSON.stringify(fbSession || {}))
+})
+
+// Called on Facebook logout
+app.post('/fbLogout', function() {
+  this.fbLogout();
+  this.halt(200, JSON.stringify({}))
+})
+
+// Static files in ./public
+app.get('/', function(file){ this.sendfile(__dirname + '/public/index.html') })
+app.get('/xd_receiver.htm', function(file){ this.sendfile(__dirname + '/public/xd_receiver.htm') })
+app.get('/javascripts/jquery.facebook.js', function(file){ this.sendfile(__dirname + '/public/javascripts/jquery.facebook.js') })
+
+
 // app.post('/event', function (req, res) // Take skip and limit variables, return list
 
 app.get('/event/:id', function (req, res) {
@@ -160,3 +207,6 @@ app.post('/event/:id/confirm', function (req, res) {
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
+
+
+
