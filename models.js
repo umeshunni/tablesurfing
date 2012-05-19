@@ -13,7 +13,8 @@ var User = new Schema({
   , zipcode         : {type: String}
   , picture         : String
   , password        : {type: String}
-  , preferences     : [{preference: String}]
+  , preferences     : [{type: String}]
+  , notify          : [{type: String}]
 })
 
 var Event = new Schema({
