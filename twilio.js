@@ -1,10 +1,10 @@
 var https = require('https');
 
-var accountSid = "AC7146821015cb43c737e13d8c4fa728e1";
-var authToken = "9c8f7be596e297359c43c14d1dda9311";
+var accountSid = "ACb26e0a7db2f04327b1133eab63012b0b";
+var authToken = "778f875178eea976246ae5d5b42bc4c9";
 var API_SERVER = 'api.twilio.com';
 var API_VERSION = '2010-04-01';
-var from = "+16464614722";
+var from = "+16264982253"; // manly table
 
 exports.sendText = function(to, body, cb){
     var postData = "To=" + to + "&From=" + from + "&Body=" + body;
