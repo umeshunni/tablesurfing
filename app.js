@@ -76,12 +76,13 @@ app.get('/home', function (req, res) {
 	
 	// Get 3 events for the data object
 	Event.find({}).limit(3).exec(function(err, events){
-		if(err) res.send(err)
+		if(err) res.send(err, 400)
 	    res.render(__dirname + '/views/home.jade', {title: "home", events: events});
 	})
 	
 });
 
+// ****** User Profile / Signup / Login ******
 app.get('/user', function (req, res) {
 	// If logged in, profile
 	if(req.session && req.session.id){
@@ -89,7 +90,7 @@ app.get('/user', function (req, res) {
 			if (user) {
 				res.render(__dirname + '/views/user.jade', {title: "user", user: user});
 			} else {
-				res.send(err)
+				res.send(err, 400)
 			}
 		})
 	}
@@ -98,6 +99,12 @@ app.get('/user', function (req, res) {
 	}	
 })
 
+// ****** User Create ******
+app.post('/user', function(req, res){
+	req.send("Pending", 200)
+})
+
+// ****** User Profile ******
 app.get('/user/:id', function (req, res) {
 	var id = req.params.id;
 	// If logged in, profile
@@ -105,16 +112,62 @@ app.get('/user/:id', function (req, res) {
 		if(user)
 			res.render(__dirname + '/views/user.jade', {title: "user/:id", user: user});
 		else
-			res.send(err)
+			res.send(err, 400)
 	})
 })
 
-
+// ****** Event List ******
 app.get('/event', function (req, res) {
 	var limit = 10
 	Event.find().limit(5).exec(function(err, events){
 	    res.render(__dirname + '/views/eventlist.jade', {title: "eventlist", events: events, page: 1, limit: limit});
 	})
+})
+
+// ****** Event Search ******
+app.post('/event', function(req, res){
+	var body = req.body
+	res.send("Pending", 200)
+})
+
+// ****** Event Profile ******
+app.get('/event/:id', function (req, res) {
+	var id = req.params.id;
+	// If logged in, profile
+	Event.findOne({id: id}, function(err, event){
+		if(event)
+			res.render(__dirname + '/views/event.jade', {title: "event/:id", event: event});
+		else
+			res.send(err, 400)
+	})
+})
+
+// ****** Add a guest to an event ******
+app.post('/event/:id/add', function (req, res) {
+	// Assume agreed to requirements
+	var id = req.params.id;
+	if(req.session && req.session.id){
+		// If logged in, profile
+		Event.findOne({id: id}, function(err, event){
+			if(err) res.send(err, 400)
+			User.findOne({id: req.session.id}, function(err, user){
+				if(err) res.send(err, 400)
+				event.guests.add({id: user.id, name: user.name}, function(err, res){
+					if(err) res.send(err, 400)
+					// Notify the host through their method
+					User.findOne({id: event.creator}, function(err, host){
+						if(host.notify.indexOf("sms") != -1)
+							twilio.sendText(host.phone, user.name + " has asked to join your event " + event.title)
+						if(host.notify.indexOf("email") != -1)
+							console.log("Be sure to drink your Ovaltine"); // Send an email to the host
+					})
+					res.render(__dirname + '/views/add.jade', {title: ":id/add", result: res});
+				})
+			})
+		})
+	} else {
+		res.render(__dirname + '/views/signup.jade', {title: "signup"});
+	}
 })
 
 
@@ -154,51 +207,10 @@ app.post('/fbLogout', function() {
 })
 
 // Static files in ./public
-app.get('/', function(file){ this.sendfile(__dirname + '/public/index.html') })
 app.get('/xd_receiver.htm', function(file){ this.sendfile(__dirname + '/public/xd_receiver.htm') })
 app.get('/javascripts/jquery.facebook.js', function(file){ this.sendfile(__dirname + '/public/javascripts/jquery.facebook.js') })
 
 
-// app.post('/event', function (req, res) // Take skip and limit variables, return list
-
-app.get('/event/:id', function (req, res) {
-	var id = req.params.id;
-	// If logged in, profile
-	Event.findOne({id: id}, function(err, event){
-		if(event)
-			res.render(__dirname + '/views/event.jade', {title: "event/:id", event: event});
-		else
-			res.send(err)
-	})
-})
-
-// app.get('/event/:eventid/confirm', routes.confirm);
-app.post('/event/:id/confirm', function (req, res) {
-	// Assume agreed to requirements
-	var id = req.params.id;
-	if(req.session && req.session.id){
-		// If logged in, profile
-		Event.findOne({id: id}, function(err, event){
-			if(err) res.send(err)
-			User.findOne({id: req.session.id}, function(err, user){
-				if(err) res.send(err)
-				event.guests.add({id: user.id, name: user.name}, function(err, res){
-					if(err) res.send(err)
-					// Notify the host through their method
-					User.findOne({id: event.creator}, function(err, host){
-						if(host.notify.indexOf("sms") != -1)
-							twilio.sendText(host.phone, user.name + " has asked to join your event " + event.title)
-						if(host.notify.indexOf("email") != -1)
-							console.log("Remember to drink your Ovaltine"); // Send an email to the host
-					})
-					res.render(__dirname + '/views/confirm.jade', {title: ":id/confirm", result: res});
-				})
-			})
-		})
-	} else {
-		res.render(__dirname + '/views/signup.jade', {title: "signup"});
-	}
-})
 
 
 // app.get('/search', routes.search);
