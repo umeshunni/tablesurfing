@@ -5,9 +5,10 @@
 
 var express = require('express')
   , routes = require('./routes')
-  , hashlib = require('./lib/support/hashlib/build/default')
+  , hashlib = require('hashlib')
   , mongoose = require('mongoose')
-  , twilio = require('./twilio');
+  , twilio = require('./twilio')
+  , facebook = require('facebook');
 
 
   mongoose.connect("mongo://localhost/tablesurfing");
@@ -27,7 +28,7 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
-  app.use(require('facebook').Facebook, {
+  app.use(facebook.Facebook, {
         apiKey: '176941975674666', 
         apiSecret: '36095cf93f7aa776e25b90a4c29e4b64'
     })
