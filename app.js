@@ -5,8 +5,10 @@
 
 var express = require('express')
   , routes = require('./routes')
+  , hashlib = require('hashlib')
   , mongoose = require('mongoose')
-  , twilio = require('./twilio');
+  , twilio = require('./twilio')
+  , facebook = require('facebook');
 
 
   mongoose.connect("mongo://localhost/tablesurfing");
@@ -26,6 +28,10 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
+  app.use(facebook.Facebook, {
+        apiKey: '176941975674666', 
+        apiSecret: '36095cf93f7aa776e25b90a4c29e4b64'
+    })
 });
 
 app.configure('development', function(){
@@ -42,20 +48,24 @@ app.use(express.session({ secret: "brown chicken brown cow" }));
 
 // Routes
 
-app.get('/', function (req, res) {
-	// If there is a user, get that object, render a partial
-	if(req.session && req.session.id){
-		User.find({id: req.session.id}, function(err, user){
-			res.renderPartial(__dirname + "/partials/header.jade", user)
-		})
-	}
-	
-	// Get 3 events for the data object
-	Event.find({limit:3}, function(err, events){
-	    res.render(__dirname + '/views/home.jade', {title: "home", events: events});
+app.post('/sms', function(req, res){
+	// Where the phone number sms returns
+	User.findOne({phone: req.body.from}, function(err, user){
+		if(err) return;
+		// Do the action based on the body
+		
 	})
+	res.contentType('xml')
+	res.send("<?xml version='1.0' encoding='UTF-8'?><Request><Sms>Thank you for texting!</Sms></Request>")
+})
+
+
+// ****** Root ******
+app.get('/', function (req, res) {
+	res.redirect('/home')
 });
 
+// ****** Home Page ******
 app.get('/home', function (req, res) {
 	// If there is a user, get that object, render a partial
 	if(req.session && req.session.id){
@@ -65,9 +75,11 @@ app.get('/home', function (req, res) {
 	}
 	
 	// Get 3 events for the data object
-	Event.find().limit(3, function(err, events){
+	Event.find({}).limit(3).exec(function(err, events){
+		if(err) res.send(err)
 	    res.render(__dirname + '/views/home.jade', {title: "home", events: events});
 	})
+	
 });
 
 app.get('/user', function (req, res) {
@@ -98,17 +110,57 @@ app.get('/user/:id', function (req, res) {
 })
 
 
-// app.get('/event', routes.createEvent)
 app.get('/event', function (req, res) {
 	var limit = 10
-	Event.find().limit(limit, function(err, events){
+	Event.find().limit(5).exec(function(err, events){
 	    res.render(__dirname + '/views/eventlist.jade', {title: "eventlist", events: events, page: 1, limit: limit});
 	})
 })
 
+
+// Called to get information about the current authenticated user
+app.get('/fbSession', function(){
+  var fbSession = this.fbSession()
+
+  if(fbSession) {
+    // Here would be a nice place to lookup userId in the database
+    // and supply some additional information for the client to use
+  }
+
+  // The client will only assume authentication was OK if userId exists
+  this.contentType('json')
+  this.halt(200, JSON.stringify(fbSession || {}))
+})
+
+// Called after a successful FB Connect
+app.post('/fbSession', function() {
+  var fbSession = this.fbSession() // Will return null if verification was unsuccesful
+
+  if(fbSession) {
+    // Now that we have a Facebook Session, we might want to store this new user in the db
+    // Also, in this.params there is additional information about the user (name, pic, first_name, etc)
+    // Note of warning: unlike the data in fbSession, this additional information has not been verified
+    fbSession.first_name = this.params.post['first_name']
+  }
+
+  this.contentType('json')
+  this.halt(200, JSON.stringify(fbSession || {}))
+})
+
+// Called on Facebook logout
+app.post('/fbLogout', function() {
+  this.fbLogout();
+  this.halt(200, JSON.stringify({}))
+})
+
+// Static files in ./public
+app.get('/', function(file){ this.sendfile(__dirname + '/public/index.html') })
+app.get('/xd_receiver.htm', function(file){ this.sendfile(__dirname + '/public/xd_receiver.htm') })
+app.get('/javascripts/jquery.facebook.js', function(file){ this.sendfile(__dirname + '/public/javascripts/jquery.facebook.js') })
+
+
 // app.post('/event', function (req, res) // Take skip and limit variables, return list
 
-// app.get('/event/:eventid', routes.event);
 app.get('/event/:id', function (req, res) {
 	var id = req.params.id;
 	// If logged in, profile
@@ -138,8 +190,6 @@ app.post('/event/:id/confirm', function (req, res) {
 							twilio.sendText(host.phone, user.name + " has asked to join your event " + event.title)
 						if(host.notify.indexOf("email") != -1)
 							console.log("Remember to drink your Ovaltine"); // Send an email to the host
-						
-						
 					})
 					res.render(__dirname + '/views/confirm.jade', {title: ":id/confirm", result: res});
 				})
@@ -158,3 +208,6 @@ app.post('/event/:id/confirm', function (req, res) {
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
+
+
+
