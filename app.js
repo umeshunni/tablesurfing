@@ -42,20 +42,23 @@ app.use(express.session({ secret: "brown chicken brown cow" }));
 
 // Routes
 
-app.get('/', function (req, res) {
-	// If there is a user, get that object, render a partial
-	if(req.session && req.session.id){
-		User.find({id: req.session.id}, function(err, user){
-			res.renderPartial(__dirname + "/partials/header.jade", user)
-		})
-	}
-	
-	// Get 3 events for the data object
-	Event.find({limit:3}, function(err, events){
-	    res.render(__dirname + '/views/home.jade', {title: "home", events: events});
+app.post('/sms', function(req, res){
+	// Where the phone number sms returns
+	User.findOne({phone: req.body.from}, function(err, user){
+		if(err) return;
+		// Do the action based on the body
+		
 	})
+	res.send("<Request><Sms>Thank you for texting!</Sms></Request>")
+})
+
+
+// ****** Root ******
+app.get('/', function (req, res) {
+	res.redirect('/home')
 });
 
+// ****** Home Page ******
 app.get('/home', function (req, res) {
 	// If there is a user, get that object, render a partial
 	if(req.session && req.session.id){
@@ -65,9 +68,11 @@ app.get('/home', function (req, res) {
 	}
 	
 	// Get 3 events for the data object
-	Event.find().limit(3, function(err, events){
+	Event.find({}).limit(3).exec(function(err, events){
+		if(err) res.send(err)
 	    res.render(__dirname + '/views/home.jade', {title: "home", events: events});
 	})
+	
 });
 
 app.get('/user', function (req, res) {
@@ -98,17 +103,15 @@ app.get('/user/:id', function (req, res) {
 })
 
 
-// app.get('/event', routes.createEvent)
 app.get('/event', function (req, res) {
 	var limit = 10
-	Event.find().limit(limit, function(err, events){
+	Event.find().limit(5).exec(function(err, events){
 	    res.render(__dirname + '/views/eventlist.jade', {title: "eventlist", events: events, page: 1, limit: limit});
 	})
 })
 
 // app.post('/event', function (req, res) // Take skip and limit variables, return list
 
-// app.get('/event/:eventid', routes.event);
 app.get('/event/:id', function (req, res) {
 	var id = req.params.id;
 	// If logged in, profile
@@ -138,8 +141,6 @@ app.post('/event/:id/confirm', function (req, res) {
 							twilio.sendText(host.phone, user.name + " has asked to join your event " + event.title)
 						if(host.notify.indexOf("email") != -1)
 							console.log("Remember to drink your Ovaltine"); // Send an email to the host
-						
-						
 					})
 					res.render(__dirname + '/views/confirm.jade', {title: ":id/confirm", result: res});
 				})
