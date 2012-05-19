@@ -1,8 +1,67 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+#container
+{
+    width:970px; 
+    margin:0 auto;
+    border:solid 1px #ccc;
 }
+#topbar
+{
+    width:auto; 
+    display:block; 
+    height:80px;
+    border-bottom:solid 1px #ccc;
+    background-color:#bbb;
+}
+#navbar
+{
+    width:auto; 
+    display:block; 
+    height:24px;
+}
+
+#main
+{
+    width:auto; 
+    display:block;
+}
+#column_left
+{
+    width:470px; 
+    margin-right:20px; 
+    float:left; 
+    min-height:400px;
+    border-right:solid 1px #ccc;
+}
+#column_right
+{
+    width:470px; 
+    float:left; 
+}
+
+/* 
+div.spacer, solve an issue with #container height
+in css 2 column layout. 
+*/
+
+div.spacer
+{
+    clear:both; 
+    height:10px; 
+    display:block;
+}
+
+#footer
+{
+    width:auto; 
+    display:block; 
+    height:24px;
+    border-top:solid 1px #ccc;
+    color:#6C717A;
+    font-size:11px;
+    text-align:center;
+}
+    
