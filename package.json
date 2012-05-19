@@ -8,6 +8,6 @@
 	, "mongodb": ">= 0.9.6-7"
 	, "mongoose": ">= 2.6.4"
 	, "hashlib": ">= 1.0.1"
-	, "facebook":">= facebook"
+	, "facebook":">= 0.0.3"
   }
 }
