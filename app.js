@@ -7,7 +7,8 @@ var express = require('express')
   , routes = require('./routes')
   , hashlib = require('hashlib')
   , mongoose = require('mongoose')
-  , twilio = require('./twilio');
+  , twilio = require('./twilio')
+  , mandrill = require('./mandrill');
 
 
   mongoose.connect("mongo://localhost/tablesurfing");
@@ -64,7 +65,7 @@ app.get('/', function (req, res) {
 app.get('/home', function (req, res) {
 	// If there is a user, get that object, render a partial
 	if(req.session && req.session.id){
-		User.find({id: req.session.id}, function(err, user){
+		User.find({_id: req.session.id}, function(err, user){
 			res.renderPartial(__dirname + "/partials/header.jade", user)
 		})
 	}
@@ -81,7 +82,7 @@ app.get('/home', function (req, res) {
 app.get('/user', function (req, res) {
 	// If logged in, profile
 	if(req.session && req.session.id){
-		User.findOne({id: req.session.id}, function(err, user){
+		User.findOne({_id: req.session.id}, function(err, user){
 			if (user) {
 				res.render(__dirname + '/views/user.jade', {title: "user", user: user});
 			} else {
@@ -131,9 +132,14 @@ app.post('/user', function(req, res){
 app.get('/user/:id', function (req, res) {
 	var id = req.params.id;
 	// If logged in, profile
-	User.findOne({id: id}, function(err, user){
-		if(user)
+	User.findOne({_id: id}, function(err, user){
+		if(user){
 			res.render(__dirname + '/views/user.jade', {title: "user/:id", user: user});
+			// mandrill.sendEmail(user.email, "You created an event", "Zomg you are so good at this", ['event-add'], function(err, res){
+			// 	if(!err) console.log("No errors")
+			// 	console.log(res)
+			// })
+		}
 		else
 			res.send(err, 400)
 	})
@@ -196,18 +202,20 @@ app.post('/event/:id/add', function (req, res) {
 	var id = req.params.id;
 	if(req.session && req.session.id){
 		// If logged in, profile
-		Event.findOne({id: id}, function(err, event){
+		Event.findOne({_id: id}, function(err, event){
 			if(err) res.send(err, 400)
-			User.findOne({id: req.session.id}, function(err, user){
+			User.findOne({_id: req.session.id}, function(err, user){
 				if(err) res.send(err, 400)
-				event.guests.add({id: user.id, name: user.name}, function(err, res){
+				event.guests.add({_id: user.id, name: user.name}, function(err, res){
 					if(err) res.send(err, 400)
 					// Notify the host through their method
-					User.findOne({id: event.creator}, function(err, host){
+					User.findOne({_id: event.creator}, function(err, host){
 						if(host.notify.indexOf("sms") != -1)
 							twilio.sendText(host.phone, user.name + " has asked to join your event " + event.title)
 						if(host.notify.indexOf("email") != -1)
-							console.log("Be sure to drink your Ovaltine"); // Send an email to the host
+							mandrill.sendEmail(host.email, "You created an event", "Zomg you are so good at this", ['event-add'], function(err, res){
+								console.log(res)
+							})
 					})
 					res.render(__dirname + '/views/add.jade', {title: ":id/add", result: res});
 				})
