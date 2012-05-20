@@ -1,49 +1,72 @@
 include partials/header
 div#content
-    div#column_left
-        div.column_left_content
-            div.photo_container
-                div.photo
-                    if(person && person.picture)
-                        img(src=person.picture)
+    form(method="POST")
+        div#column_left
+            div.column_left_content
+                div.photo_container
+                    div.photo
+                        if(person && person.picture)
+                            img(src=person.picture)
+                            if (edit) 
+                                span edit
+                        else
+                            img(src='')
+                    div.name
                         if (edit) 
-                            span edit
-                    else
-                        img(src='')
-                div.name
-                    h2= person.name
-                    if (edit) 
-                        span edit
-            div.location
-                strong Location
-                br
-                span=person.city + ", " + person.zipcode
-                if (edit) 
-                    span edit
-            div.contact
-                strong Contact
-                br
-                span=person.phone
-                if (edit) 
-                    span edit
+                            input(type="text", value=person.name, name="name", placeholder="John Doe")
+                        else
+                            h2= person.name
+                div.location
+                    p
+                        strong Location
+                        br
+                        if (edit) 
+                            p City
+                                input(type="text", value=person.city, name="city", placeholder="city")
+                            p State
+                                input(type="text", value=person.state, name="state", placeholder="State")
+                            p Zip code:
+                                input(type="text", value=person.zipcode, name="zipcode", placeholder="zip")
+                        else
+                            span=person.city + ", " + person.state + " " + person.zipcode
+
+                div.contact
+                    p
+                        strong Contact
+                        br
+                        if (edit)
+                            span phone: 
+                            input(type="text", value=person.phone, name="phone", placeholder="888-999-0000")
+                        else
+                            span=person.phone
+                        br
+                        if (edit)
+                            span email:
+                            input(type="text", value=person.email, name="email", placeholder="name@domain.com")
+                        else
+                            span=person.phone
                     
-    div#column_right
-        div.column_right_content
-            div.bio
-                if person.bio
-                    p=person.bio
+        div#column_right
+            div.column_right_content
+                div.bio
+                    if(edit)
+                        textarea(value=person.bio, name="bio", rows="3", placeholder="Tell us about yourself")
+                    else
+                        p=person.bio
+                div.photos
+                    h2 Photos go here
                     if (edit) 
                         span edit
-                else
-                    p He's very good!
-            div.photos
-                h2 Photos go here
-                if (edit) 
-                    span edit
-            div.events
-                h2 
-                    a(href="/event?creator=" + person._id)
-                        Find events hosted by this person
+                div.events
+                    h2 
+                        a(href="/event?creator=" + person._id)
+                            if(edit)
+                                a(href="/event?creator=" + person._id) Your events
+                            else
+                                a(href="/event?creator=" + person._id) See Events hosted by this person
+                if(edit)
+                    input(type='Submit', value='Save')
+                        Save
                 
 div.spacer
 include partials/footer

@@ -88,6 +88,7 @@ app.get('/', function (req, res) {
 
 // ****** Home Page ******
 app.get('/home', function (req, res) {
+	console.log(everyauth.user)
 	// If there is a user, get that object, render a partial
 	// Get 3 events for the data object
 	Event.find({}).limit(3).exec(function(err, events){
@@ -116,31 +117,13 @@ app.get('/user', function (req, res) {
 app.post('/user', function(req, res){
 	// Validate the entry
 	var body = req.body
-	// var validFields = [
-	//   'name'
-	// , 'email'
-	// , 'phone'
-	// , 'address'
-	// , 'city'
-	// , 'zipcode'
-	// , 'picture'
-	// , 'password'
-	// , 'preferences'
-	// , 'notify'
-	// ]
-	// 
-	// // Scrub unnecessary fields
-	// for (key in body){
-	// 	if(validFields.indexOf(key) == -1){
-	// 		body.delete(key)
-	// 	}
-	// }	
-
-	var userObject = new User(req.body);
-	userObject.save(function(err){
-		if(err) res.send(err, 400)
-		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up", message: "Your user has been created.  Please log in."});
-	});
+	var auth = req.session.auth
+	var id = ""
+	if (auth && auth.user)
+		var id = auth.user.id
+	User.update({facebook: id}, req.body, function(err, updated){
+		res.redirect('/user')
+	})
 })
 
 // ****** User Profile ******
