@@ -8,7 +8,8 @@ var express = require('express')
   , hashlib = require('hashlib')
   , mongoose = require('mongoose')
   , twilio = require('./twilio')
-  , mandrill = require('./mandrill');
+  , mandrill = require('./mandrill')
+  , everyauth = require('everyauth');
 
 
   mongoose.connect("mongo://localhost/tablesurfing");
@@ -19,6 +20,8 @@ var express = require('express')
 
 var app = module.exports = express.createServer();
 
+everyauth.helpExpress(app);
+
 // Configuration
 
 app.configure(function(){
@@ -26,8 +29,11 @@ app.configure(function(){
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(app.router);
+  app.use(express.cookieParser());
+  app.use(express.session({ secret: "brown chicken brown cow" }));
   app.use(express.static(__dirname + '/public'));
+  app.use(require('./auth').configure(app));
+  app.use(app.router);
 });
 
 app.configure('development', function(){
@@ -38,9 +44,7 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-// Session variables
-app.use(express.cookieParser());
-app.use(express.session({ secret: "brown chicken brown cow" }));
+
 
 // Routes
 
@@ -64,7 +68,7 @@ app.get('/', function (req, res) {
 // ****** Home Page ******
 app.get('/home', function (req, res) {
 	// If there is a user, get that object, render a partial
-	if(req.session && req.session.id){
+	if(everyauth.loggedIn){
 		User.find({_id: req.session.id}, function(err, user){
 			res.renderPartial(__dirname + "/partials/header.jade", user)
 		})
@@ -74,7 +78,7 @@ app.get('/home', function (req, res) {
 	Event.find({}).limit(3).exec(function(err, events){
 		console.log(events)
 		if(err) res.send(err, 400)
-	    res.render(__dirname + '/views/home.jade', {title: "home", events: events});
+	    res.render(__dirname + '/views/home.jade', {title: "TableSurfing - Home", events: events});
 	})
 	
 });
@@ -82,17 +86,17 @@ app.get('/home', function (req, res) {
 // ****** User Profile / Signup / Login ******
 app.get('/user', function (req, res) {
 	// If logged in, profile
-	if(req.session && req.session.id){
+	if(everyauth.loggedIn){
 		User.findOne({_id: req.session.id}, function(err, user){
 			if (user) {
-				res.render(__dirname + '/views/user.jade', {title: "user", user: user});
+				res.render(__dirname + '/views/user.jade', {title: "TableSurfing - User Profile", user: user});
 			} else {
 				res.send(err, 400)
 			}
 		})
 	}
 	else{
-		res.render(__dirname + '/views/signup.jade', {title: "signup"});
+		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up"});
 	}	
 })
 
@@ -123,7 +127,7 @@ app.post('/user', function(req, res){
 	var userObject = new User(req.body);
 	userObject.save(function(err){
 		if(err) res.send(err, 400)
-		res.render(__dirname + '/views/signup.jade', {title: "signup", message: "Your user has been created.  Please log in."});
+		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up", message: "Your user has been created.  Please log in."});
 	});
 	
 
@@ -135,7 +139,7 @@ app.get('/user/:id', function (req, res) {
 	// If logged in, profile
 	User.findOne({_id: id}, function(err, user){
 		if(user){
-			res.render(__dirname + '/views/user.jade', {title: "user/:id", user: user});
+			res.render(__dirname + '/views/user.jade', {title: "TableSurfing - User Profile", user: user});
  		}
 		else
 			res.send(err, 400)
@@ -155,30 +159,28 @@ app.get('/event', function (req, res) {
 	// GET skip/limit
 	var skip = req.param('skip', 0)
 	var limit = req.param('limit', 10)
-	Event.find(filter)
+	Event.find(filters)
 	    .skip(skip)
 	    .limit(limit)
 		.exec(function(err, events){
-	    res.render(__dirname + '/views/eventlist.jade', {title: "eventlist", events: events, page: (skip/limit + 1), limit: limit});
+	    res.render(__dirname + '/views/eventlist.jade', {title: "TableSurfing - Events List", events: events, page: (skip/limit + 1), limit: limit});
 	})
 })
 
 // ****** Event Create ******
 app.post('/event', function(req, res){
 	var body = req.body
-	req.session = {}
-	req.session.id = "12345"
-	if (req.session && req.session.id){
+	if (everyauth.loggedIn){
 		var eventObject = new Event(body);
 		eventObject.creator = req.session.id
 	
 		eventObject.save(function(err){
 			if(err) res.send(err, 400)
-			res.render(__dirname + '/views/event.jade', {title: "post event", event: eventObject});
+			res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Post Event", event: eventObject});
 			//res.redirect('/event/' + eventObject.id, 200)
 		});
 	} else {
-		res.render(__dirname + '/views/signup.jade', {title: "signup"});
+		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up"});
 	}
 })
 
@@ -190,10 +192,12 @@ app.get('/event/:id', function (req, res) {
 		if(event){
 			console.log(event)
 			console.log(event.creator)
-			User.findOne({id: event.creator}, function(err, host){
+			var creator = event.creator
+			User.findOne({"_id": creator}, function(err, host){
+				if(err) res.send(err, 400)
 				console.log(err)
 				console.log(host)
-				res.render(__dirname + '/views/event.jade', {title: "event/:id", event: event, host: host});
+				res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Event Info", event: event, host: host});
 			})
 		}
 		else
@@ -205,7 +209,7 @@ app.get('/event/:id', function (req, res) {
 app.post('/event/:id/add', function (req, res) {
 	// Assume agreed to requirements
 	var id = req.params.id;
-	if(req.session && req.session.id){
+	if(everyauth.loggedIn){
 		// If logged in, profile
 		Event.findOne({_id: id}, function(err, event){
 			if(err) res.send(err, 400)
@@ -222,12 +226,12 @@ app.post('/event/:id/add', function (req, res) {
 								console.log(res)
 							})
 					})
-					res.render(__dirname + '/views/add.jade', {title: ":id/add", result: res});
+					res.render(__dirname + '/views/add.jade', {title: "TableSurfing - Add Event", result: res});
 				})
 			})
 		})
 	} else {
-		res.render(__dirname + '/views/signup.jade', {title: "signup"});
+		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up"});
 	}
 })
 
@@ -235,7 +239,7 @@ app.post('/event/:id/add', function (req, res) {
 app.post('/event/:id/guests', function(req, res){
 	// Updates the guest object
 	var body = req.body
-	if(req.session && req.session.id){
+	if(everyauth.loggedIn){
 		User.find({_id:req.session.id}, function(err, user){ // Get the host
 			if(err) res.send(err, 400)
 			Event.find({_id:req.params.id}, function(err, event){
@@ -247,7 +251,7 @@ app.post('/event/:id/guests', function(req, res){
 				// event.save(function(err){
 				// 	   if(err) res.send(err, 400)
 				// });
-				res.render(__dirname + '/views/event.jade', {title: "event/:id", event: event});
+				res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Guests", event: event});
 			})
 		})
 	}

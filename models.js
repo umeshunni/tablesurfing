@@ -29,7 +29,7 @@ var Event = new Schema({
   , time      : String
   , status    : {type:String, default: "open"}
   , comment   : String
-  , free      : {type: Number, default: 1}
+  , seats      : {type: Number, default: 1}
   , guests    : [{
           id       : String
         , name     : String

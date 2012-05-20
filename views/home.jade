@@ -7,17 +7,21 @@ include partials/header
                 input#location.location (type='text' autocomplete='off' placeholder='Where are you going?')
                 a#submit_location.button.orange Search
             div#description We want to redefine the traditional restaurant and bring the experience home. Help capture the community building that is lost living in a large city by getting to know your neighbors in one of the oldest traditions in human history, sharing a meal.
-    div#column_right
-        div.event-preview
-                div(style='overflow:hidden;height:250px;width:350px;')
-                    img(src='graphics/food1_350x250.png')
-                - var event = {'date': 'Monday May 5th 8- 10 pm', 'address': 'Beacon Hill, Seattle, WA', 'name': 'Jeff The Chef','menu': 'Sea Scallops and grilled bell peppers','price': '12 per person'}
-
-                label='Date: ' + events[0].date
-                label='Hosted by: ' + events[0].creator
-                label='Menu: ' + events[0].comment
-                a#submit_location.button.orange Join this table
+    div#column_right#container
+        div.carousel.example-1.js       
+        img(src=events[0].title)
+            div.column_right_content.carousel-wrap
+                ul
+                    li
+                        img(src='graphics/food1.jpg')
+                    li
+                        img(src='graphics/food2.jpg')
+                    li
+                        img(src='graphics/food3.jpg')
     div.spacer
-
-
+    script
+        $(".column_right_content").carousel( {
+        autoSlide: true,
+        autoSlideInterval: 5000
+        } );
     include partials/footer

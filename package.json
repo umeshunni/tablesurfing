@@ -9,5 +9,6 @@
 	, "mongoose": ">= 2.6.4"
 	, "hashlib": ">= 1.0.1"
 	, "facebook":">= 0.0.3"
+	, "everyauth":">= 0.2.32"
   }
 }

@@ -17,19 +17,23 @@ div#content
             div#pictures
                 strong="Photos from " + host.name
                 br
-                span=user.city + ", " + user.zipcode
+                span=host.city + ", " + host.zipcode
                     
     div#column_right_sidebar
         div.column_right_content
-            div.bio
-                if user.bio
-                    p=user.bio
-                else
-                    p He's very good!
-            div.photos
-                h2 Photos go here
-            div.events
-                h2 Find events hosted by this person
+            div.details
+                p
+                    h3 When
+                    span=event.date
+                p
+                    h3 Where
+                    span=host.city + " " + host.state
+                p
+                    h3 Cost
+                p
+                    h3 Table Size
+                each guest in event.guests
+                    p=guest.name
                 
 div.spacer
 include partials/footer

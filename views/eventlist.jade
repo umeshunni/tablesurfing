@@ -1,7 +1,22 @@
-!!!
-html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-body
-    p this is eventlist
+include partials/header
+div#content
+    div#column_left
+        div.column_left_content
+            div.filters
+                p This is where filters go
+                form(method="GET")
+                    input(type="text")
+    div#column_right
+        div.column_right_content
+            ul
+                each event in events
+                    li
+                        p
+                        a(href='event/' + event._id)=event.title
+                        p=event.date + " " + event.time
+                        p=event.city + " " + event.state
+            p this is eventlist
+    
+div.spacer
+include partials/footer
+    
