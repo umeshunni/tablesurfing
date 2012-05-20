@@ -1,13 +1,7 @@
-!!!
-html
-  head
-    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js')
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
+include partials/header
     div#fb-root
  
-    p the signup page
+    div#userName
     
     script
         window.fbAsyncInit = function() {
@@ -19,6 +13,39 @@ html
             xfbml      : true,
             oauth      : true,
           });
+        
+        function displayUser(user) {
+            var userName = document.getElementById('userName');
+            var greetingText = document.createTextNode('Greetings, '
+                + user.name + '.');
+            userName.appendChild(greetingText);
+            }
+
+            // listen for and handle auth.statusChange events
+            FB.Event.subscribe('auth.statusChange', function(response) {
+              if (response.authResponse) {
+                // user has auth'd your app and is logged into Facebook
+                FB.api('/me', function(me){
+                  if (me.name) {
+                    displayUser(me);
+                  }
+                  $('#fb-logout-button').show();
+                  $('#fb-login-button').hide();
+                })
+              } else {
+                  $('#fb-logout-button').hide();
+                  $('#fb-login-button').show();
+              }
+            });
+    
+            // respond to clicks on the login and logout links
+            /*document.getElementById('fb-login-button').addEventListener('click', function(){
+              FB.login();
+            });
+            */
+            $('#fb-logout-button').bind('click', function(){
+              FB.logout();
+            }); 
         };
         (function(d){
            var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
@@ -27,5 +54,9 @@ html
            d.getElementsByTagName('head')[0].appendChild(js);
          }(document));
     
-    div.fb-login-button.
+    div.fb-login-button#fb-login-button.
         Login with Facebook
+    div.fb-login-button#fb-logout-button.
+        Logout
+        
+    include partials/footer
