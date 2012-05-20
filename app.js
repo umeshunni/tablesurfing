@@ -135,11 +135,7 @@ app.get('/user/:id', function (req, res) {
 	User.findOne({_id: id}, function(err, user){
 		if(user){
 			res.render(__dirname + '/views/user.jade', {title: "user/:id", user: user});
-			// mandrill.sendEmail(user.email, "You created an event", "Zomg you are so good at this", ['event-add'], function(err, res){
-			// 	if(!err) console.log("No errors")
-			// 	console.log(res)
-			// })
-		}
+ 		}
 		else
 			res.send(err, 400)
 	})
@@ -147,12 +143,13 @@ app.get('/user/:id', function (req, res) {
 
 // ****** Event List/Search ******
 app.get('/event', function (req, res) {
-	// GET filters: radius, creator, preference, date
+	// GET filters: city, creator, preference, date
 	var filters = {}
 	if(req.query){
 		if(req.query.creator) filter.creator = req.query.creator
-		if(req.query.preference) filter.preference = req.query.preference
+		if(req.query.preference) filter.preference = req.query.preference.split(',')
 		if(req.query.date) filter.date = req.query.date
+		if(req.query.city) filter.city = req.query.city
 	}
 	// GET skip/limit
 	var skip = req.param('skip', 0)
@@ -226,9 +223,28 @@ app.post('/event/:id/add', function (req, res) {
 	}
 })
 
+// ****** Confirm/Deny a guest ******
+app.post('/event/:id/guests', function(req, res){
+	// Updates the guest object
+	var body = req.body
+	if(req.session && req.session.id){
+		User.find({_id:req.session.id}, function(err, user){ // Get the host
+			if(err) res.send(err, 400)
+			Event.find({_id:req.params.id}, function(err, event){
+				if(err)res.send(err, 400)
+				if(event.creator != user._id) res.send("Unauthorized", 401)
+				
+				event.guests = body
+				// This may not be necessary
+				// event.save(function(err){
+				// 	   if(err) res.send(err, 400)
+				// });
+				res.render(__dirname + '/views/event.jade', {title: "event/:id", event: event});
+			})
+		})
+	}
 
-// app.get('/search', routes.search);
-
+})
 
 
 app.listen(3000, function(){
