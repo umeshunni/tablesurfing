@@ -18,8 +18,8 @@ var User = mongoose.model("User", User);
 var Event = mongoose.model("Event", Event);
 
 everyauth.facebook
-.appId('217422248376051')
-.appSecret('b9723de2871ddcd41b07ffe5a97e7f6a')
+.appId('176941975674666')
+.appSecret('36095cf93f7aa776e25b90a4c29e4b64')
 .findOrCreateUser( function(session, accessToken, accessTokenExtra, fbUserMetadata){
 var id = fbUserMetadata.id;
 var promise = this.Promise();
@@ -30,6 +30,7 @@ User.findOne({ facebook: id}, function(err, result) {
 		user.facebook = id;
 		user.name = fbUserMetadata.name;
 		user.save();
+		user.picture = fbUserMetadata.picture; 
 	} else {
 		user = result;
 	}
