@@ -185,3 +185,8 @@ padding-top:60px;
 	padding:3px;
 	font-weight:bold;
 }
+.event-left .title{
+	margin-left:100px;
+	padding: 10px;
+	font-size: 12px;
+}

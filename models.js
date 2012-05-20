@@ -31,6 +31,7 @@ var Event = new Schema({
   , status    : {type:String, default: "open"}
   , comment   : String
   , seats      : {type: Number, default: 1}
+  , cost       : String
   , guests    : [{
           id       : String
         , name     : String

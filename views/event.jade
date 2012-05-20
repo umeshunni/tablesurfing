@@ -1,5 +1,7 @@
 include partials/header
     div.event-left
+        div 
+            h3.title=event.title
         div.column_left_content
             div#description
                 p=event.comment
@@ -30,6 +32,8 @@ include partials/header
                     h3 Cost
                 p
                     h3 Table Size
+                p
+                    a#submit_location.button.orange(href="#") Join now
                 each guest in event.guests
                     p=guest.name
                 

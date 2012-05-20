@@ -88,7 +88,7 @@ app.get('/', function (req, res) {
 
 // ****** Home Page ******
 app.get('/home', function (req, res) {
-	console.log(everyauth.user)
+	console.log(everyauth.facebook.user)
 	// If there is a user, get that object, render a partial
 	// Get 3 events for the data object
 	Event.find({}).limit(3).exec(function(err, events){
@@ -119,8 +119,8 @@ app.post('/user', function(req, res){
 	var body = req.body
 	var auth = req.session.auth
 	var id = ""
-	if (auth && auth.user)
-		var id = auth.user.id
+	if (auth && auth.facebook.user)
+		var id = auth.facebook.user.id
 	User.update({facebook: id}, req.body, function(err, updated){
 		res.redirect('/user')
 	})
@@ -169,16 +169,29 @@ app.post('/event', function(req, res){
 	var body = req.body
 	if (req.session.auth && req.session.auth.loggedIn){
 		var eventObject = new Event(body);
-		eventObject.creator = req.session.id
 	
 		eventObject.save(function(err){
 			if(err) res.send(err, 400)
-			res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Post Event", event: eventObject});
-			//res.redirect('/event/' + eventObject.id, 200)
+			//res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Post Event", event: eventObject});
+			res.redirect('/event/' + eventObject._id, 200)
 		});
 	} else {
 		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up"});
 	}
+})
+
+app.get('/event/create', function(req, res){
+	if (req.session.auth && req.session.auth.loggedIn){
+		var auth = req.session.auth
+		var facebookid = auth.facebook.user.id
+		User.findOne({"facebook":facebookid}, function (err, host){
+			if(err) res.send(err, 400)
+			res.render(__dirname + '/views/eventcreate.jade', {title: "TableSurfing - Create Event", host: host});
+		})
+	} else {
+		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up"});
+	}
+	
 })
 
 // ****** Event Profile ******
@@ -187,9 +200,8 @@ app.get('/event/:id', function (req, res) {
 	// If logged in, profile
 	Event.findOne({_id: id}, function(err, event){
 		if(event){
-			//TODO event creator should be a user id, just wiring it to the first user for now
-            		// var creator = event.creator
-			User.findOne({}, function(err, host){
+			var creator = event.creator
+			User.findOne({_id: creator}, function(err, host){
 				if(err) res.send(err, 400)
 				res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Event Info", event: event, host: host});
 			})
@@ -207,7 +219,7 @@ app.post('/event/:id/add', function (req, res) {
 		// If logged in, profile
 		Event.findOne({_id: id}, function(err, event){
 			if(err) res.send(err, 400)
-			User.findOne({facebook: req.session.auth.user.id}, function(err, user){
+			User.findOne({facebook: req.session.auth.facebook.user.id}, function(err, user){
 				if(err) res.send(err, 400)
 				event.guests.add({_id: user.id, name: user.name}, function(err, res){
 					if(err) res.send(err, 400)
