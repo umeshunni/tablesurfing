@@ -224,7 +224,7 @@ app.post('/event/:id/add', function (req, res) {
 })
 
 // ****** Confirm/Deny a guest ******
-app.post('/event/:id/confirm', function(req, res){
+app.post('/event/:id/guests', function(req, res){
 	// Updates the guest object
 	var body = req.body
 	if(req.session && req.session.id){

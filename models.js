@@ -25,6 +25,7 @@ var Event = new Schema({
   , date      : String
   , status    : {type:String, default: "open"}
   , comment   : String
+  , free      : {type: Number, default: 1}
   , guests    : [{
           id       : String
         , name     : String
