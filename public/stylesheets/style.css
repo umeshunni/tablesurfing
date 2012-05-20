@@ -146,3 +146,42 @@ div.spacer
 .event-preview .button{
 	margin-top:20px;
 }
+
+.event-left
+{
+    width:470px; 
+    margin-right:20px; 
+    float:left; 
+    min-height:400px;
+padding-top:60px;
+}
+.event-right
+{
+    width:470px; 
+    float:left; 
+    padding-top:60px;
+}
+
+.event-left .column_left_content
+{
+	background-color:#eee;
+	padding:10px;
+	margin-left:100px;
+}
+
+.event-right .column_right_content
+{
+	background-color:#eee;
+	padding:20px;
+
+}
+.column_left_content #description{
+	padding:20px 0;
+}
+
+.event-right .details h3
+{
+	font-size:12px;
+	padding:3px;
+	font-weight:bold;
+}

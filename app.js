@@ -187,8 +187,9 @@ app.get('/event/:id', function (req, res) {
 	// If logged in, profile
 	Event.findOne({_id: id}, function(err, event){
 		if(event){
-			var creator = event.creator
-			User.findOne({"_id": creator}, function(err, host){
+			//TODO event creator should be a user id, just wiring it to the first user for now
+            		// var creator = event.creator
+			User.findOne({}, function(err, host){
 				if(err) res.send(err, 400)
 				res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Event Info", event: event, host: host});
 			})

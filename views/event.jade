@@ -1,7 +1,5 @@
 include partials/header
-div#content
-    h1=event.title
-    div#column_left
+    div.event-left
         div.column_left_content
             div#description
                 p=event.comment
@@ -9,7 +7,7 @@ div#content
                 if host.picture
                     img(src=host.picture)
                 else
-                    img(src='/images/placeholder.jpg')
+                    img(src='/graphics/placeholder.jpg')
                 p
                     h3=host.name
                 p
@@ -19,7 +17,7 @@ div#content
                 br
                 span=host.city + ", " + host.zipcode
                     
-    div#column_right_sidebar
+    div.event-right
         div.column_right_content
             div.details
                 p
