@@ -1,7 +1,35 @@
-!!!
-html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-      p=event
+include partials/header
+div#content
+    h1=event.title
+    div#column_left
+        div.column_left_content
+            div#description
+                p=event.comment
+            div#host
+                if host.picture
+                    img(src=host.picture)
+                else
+                    img(src='/images/placeholder.jpg')
+                p
+                    h3=host.name
+                p
+                    host.bio
+            div#pictures
+                strong="Photos from " + host.name
+                br
+                span=user.city + ", " + user.zipcode
+                    
+    div#column_right_sidebar
+        div.column_right_content
+            div.bio
+                if user.bio
+                    p=user.bio
+                else
+                    p He's very good!
+            div.photos
+                h2 Photos go here
+            div.events
+                h2 Find events hosted by this person
+                
+div.spacer
+include partials/footer

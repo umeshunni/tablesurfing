@@ -72,6 +72,7 @@ app.get('/home', function (req, res) {
 	
 	// Get 3 events for the data object
 	Event.find({}).limit(3).exec(function(err, events){
+		console.log(events)
 		if(err) res.send(err, 400)
 	    res.render(__dirname + '/views/home.jade', {title: "home", events: events});
 	})
@@ -99,25 +100,25 @@ app.get('/user', function (req, res) {
 app.post('/user', function(req, res){
 	// Validate the entry
 	var body = req.body
-	var validFields = [
-	  'name'
-	, 'email'
-	, 'phone'
-	, 'address'
-	, 'city'
-	, 'zipcode'
-	, 'picture'
-	, 'password'
-	, 'preferences'
-	, 'notify'
-	]
-
-	// Scrub unnecessary fields
-	for (key in body){
-		if(validFields.indexOf(key) == -1){
-			body.remove(key)
-		}
-	}	
+	// var validFields = [
+	//   'name'
+	// , 'email'
+	// , 'phone'
+	// , 'address'
+	// , 'city'
+	// , 'zipcode'
+	// , 'picture'
+	// , 'password'
+	// , 'preferences'
+	// , 'notify'
+	// ]
+	// 
+	// // Scrub unnecessary fields
+	// for (key in body){
+	// 	if(validFields.indexOf(key) == -1){
+	// 		body.delete(key)
+	// 	}
+	// }	
 
 	var userObject = new User(req.body);
 	userObject.save(function(err){
@@ -186,8 +187,15 @@ app.get('/event/:id', function (req, res) {
 	var id = req.params.id;
 	// If logged in, profile
 	Event.findOne({_id: id}, function(err, event){
-		if(event)
-			res.render(__dirname + '/views/event.jade', {title: "event/:id", event: event});
+		if(event){
+			console.log(event)
+			console.log(event.creator)
+			User.findOne({id: event.creator}, function(err, host){
+				console.log(err)
+				console.log(host)
+				res.render(__dirname + '/views/event.jade', {title: "event/:id", event: event, host: host});
+			})
+		}
 		else
 			res.send(err, 400)
 	})

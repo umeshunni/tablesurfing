@@ -10,11 +10,14 @@ var User = new Schema({
   , phone           : {type: String}
   , address         : {type: String}
   , city            : {type: String}
+  , state           : {type: String}
   , zipcode         : {type: String}
   , picture         : String
   , password        : {type: String}
   , preferences     : [{type: String}]
   , notify          : [{type: String}]
+  , bio             : String
+  , photos          : [{type: String}]
 })
 
 var Event = new Schema({
@@ -23,6 +26,7 @@ var Event = new Schema({
   , creator   : String
   , created   : {type:String, default: Date.now}
   , date      : String
+  , time      : String
   , status    : {type:String, default: "open"}
   , comment   : String
   , free      : {type: Number, default: 1}
@@ -32,6 +36,7 @@ var Event = new Schema({
         , date     : {type:String, default: Date.now}
         , approval : {type:String, default:"pending"}
     }]
+  , photos: [{type : String}]
 });
 
 

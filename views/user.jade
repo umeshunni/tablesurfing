@@ -1,1 +1,32 @@
-p Welcome to TableSurfer!
+include partials/header
+div#content
+    div#column_left_sidebar
+        div.column_left_content
+            div.photo_container
+                div.photo
+                    img(src=user.picture)
+                div.name
+                    h2= user.name
+            div.location
+                strong Location
+                br
+                span=user.city + ", " + user.zipcode
+            div.contact
+                strong Contact
+                br
+                span=user.phone
+                    
+    div#column_right
+        div.column_right_content
+            div.bio
+                if user.bio
+                    p=user.bio
+                else
+                    p He's very good!
+            div.photos
+                h2 Photos go here
+            div.events
+                h2 Find events hosted by this person
+                
+div.spacer
+include partials/footer
