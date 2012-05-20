@@ -96,7 +96,36 @@ app.get('/user', function (req, res) {
 
 // ****** User Create ******
 app.post('/user', function(req, res){
-	req.send("Pending", 200)
+	//req.send("Pending", 200)
+	// Validate the entry
+	var body = req.body
+	var validFields = [
+	  'name'
+	, 'email'
+	, 'phone'
+	, 'address'
+	, 'city'
+	, 'zipcode'
+	, 'picture'
+	, 'password'
+	, 'preferences'
+	, 'notify'
+	]
+
+	// Scrub unnecessary fields
+	for (key in body){
+		if(validFields.indexOf(key) == -1){
+			body.remove(key)
+		}
+	}	
+
+	var userObject = new User(req.body);
+	userObject.save(function(err){
+		if(err) res.send(err, 400)
+		res.render(__dirname + '/views/signup.jade', {title: "signup", message: "Your user has been created.  Please log in."});
+	});
+	
+
 })
 
 // ****** User Profile ******
@@ -123,6 +152,22 @@ app.get('/event', function (req, res) {
 app.post('/event', function(req, res){
 	var body = req.body
 	res.send("Pending", 200)
+})
+
+app.post('/event', function(req, res){
+	var body = req.body
+	if (req.session && req.session.id){
+		var eventObject = new User(body);
+		eventObject.creator = req.session.id
+	
+		eventObject.save(function(err){
+			if(err) res.send(err, 400)
+			res.render(__dirname + '/views/event.jade', {title: "post event", event: eventObject});
+			//res.redirect('/event/' + eventObject.id, 200)
+		});
+	} else {
+		res.render(__dirname + '/views/signup.jade', {title: "signup"});
+	}
 })
 
 // ****** Event Profile ******
