@@ -133,3 +133,36 @@ div.spacer
     padding-left: 70px;
     padding-top: 5px;
 }
+
+.column_right_content ul li
+{
+    height: 355px;
+    width: 500px;
+}
+
+#container{overflow:hidden;margin:0 auto 20px;width:990px;}
+div.box-primary{display:inline;float:left;width:620px;}
+div.box-secondary{display:inline;float:right;padding-left:15px;width:350px;}
+div.box-inner{overflow:hidden;padding-bottom:15px;border-bottom:1px solid #2f2f2f;zoom:1;} 
+#container .js{overflow:hidden;zoom:1;}
+#container .carousel,
+#container .carousel .carousel-wrap{margin:0;border:0;zoom:1;}
+#container .js .carousel-wrap{display:inline-block;vertical-align:middle;width:500px;margin:0 5px 15px;border:1px solid #4f4f4f;background:#1a1a1a;}
+.IE #container .js .carousel-wrap{display:inline;}
+#container .carousel ul{margin:0;padding:0;zoom:1;}
+#container .js ul li{overflow:hidden;display:inline;float:left;width:500px;height:335px;text-align:center;zoom:1;}
+#container .carousel .carousel-control{overflow:hidden;display:inline-block;vertical-align:middle;width:40px;height:40px;cursor:pointer;line-height:999px;zoom:1;border:0;text-indent:-9999px;}
+#container .carousel .carousel-next{background:url(../images/buttons/next.png) 0 0 no-repeat;}
+#container .carousel .carousel-previous{background:url(../images/buttons/prev.png) 0 0 no-repeat;}
+#container .carousel .carousel-control:hover{-moz-opacity:.7;opacity:0.70;filter:alpha(opacity=70);}
+#container .carousel .disabled,#container .carousel .disabled:hover{-moz-opacity:.1;opacity:0.10;filter:alpha(opacity=10);cursor:default;}
+#container .carousel div{margin:0;padding:0;border:0;}
+#container .carousel ul{padding:0;list-style:none;}
+#container .carousel ul li{position:relative;width:500px;margin:0;}
+#container .carousel ul li cite{position:absolute;bottom:3px;right:10px;line-height:19px;font-size:11px;}
+#container .carousel ul li cite a img{vertical-align:middle;}
+#container .carousel ul li cite a{color:#fff;text-decoration:none;}
+#container div.center-wrap{overflow:hidden;clear:both;zoom:1;}
+#container div.center-wrap div{border:0;margin:15px 0;}
+#container div.center-wrap a{margin:0 2px;padding:2px 5px;border:1px solid #4f4f4f;background:#333;cursor:pointer;color:#fff;-moz-border-radius:12px;webkit-border-radius:12px;border-radius:12px;}
+#container div.center-wrap a.active{font-weight:bold;color:#5db0e6;}
