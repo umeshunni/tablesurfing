@@ -1,62 +1,8 @@
 include partials/header
-    div#fb-root
- 
-    div#userName
-    
-    script
-        window.fbAsyncInit = function() {
-          FB.init({
-            appId      : '176941975674666',
-            channelUrl : '//localhost:3000/public/channel.html',
-            status     : true, 
-            cookie     : true,
-            xfbml      : true,
-            oauth      : true,
-          });
-        
-        function displayUser(user) {
-            var userName = document.getElementById('userName');
-            var greetingText = document.createTextNode('Greetings, '
-                + user.name + '.');
-            userName.appendChild(greetingText);
-            }
-
-            // listen for and handle auth.statusChange events
-            FB.Event.subscribe('auth.statusChange', function(response) {
-              if (response.authResponse) {
-                // user has auth'd your app and is logged into Facebook
-                FB.api('/me', function(me){
-                  if (me.name) {
-                    displayUser(me);
-                  }
-                  $('#fb-logout-button').show();
-                  $('#fb-login-button').hide();
-                })
-              } else {
-                  $('#fb-logout-button').hide();
-                  $('#fb-login-button').show();
-              }
-            });
-    
-            // respond to clicks on the login and logout links
-            /*document.getElementById('fb-login-button').addEventListener('click', function(){
-              FB.login();
-            });
-            */
-            $('#fb-logout-button').bind('click', function(){
-              FB.logout();
-            }); 
-        };
-        (function(d){
-           var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-           js = d.createElement('script'); js.id = id; js.async = true;
-           js.src = "//connect.facebook.net/en_US/all.js";
-           d.getElementsByTagName('head')[0].appendChild(js);
-         }(document));
-    
-    div.fb-login-button#fb-login-button.
-        Login with Facebook
-    div.fb-login-button#fb-logout-button.
-        Logout
-        
-    include partials/footer
+div#container
+    div
+        h1 Please Log in
+        p You are going to enjoy your experience here.  Help us out with some basic information so we can set you up with local food buddies.
+        p
+            a(href='/auth/facebook', title='Gotta get some new methods right quick') Log in with Facebook
+include partials/footer

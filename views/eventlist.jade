@@ -15,7 +15,8 @@ div#content
                         a(href='event/' + event._id)=event.title
                         p=event.date + " " + event.time
                         p=event.city + " " + event.state
-            p this is eventlist
+            if (events.length == 0)
+                p There doesn't seem to be anything here
     
 div.spacer
 include partials/footer

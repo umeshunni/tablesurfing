@@ -4,29 +4,46 @@ div#content
         div.column_left_content
             div.photo_container
                 div.photo
-                    img(src=user.picture)
+                    if(person && person.picture)
+                        img(src=person.picture)
+                        if (edit) 
+                            span edit
+                    else
+                        img(src='')
                 div.name
-                    h2= user.name
+                    h2= person.name
+                    if (edit) 
+                        span edit
             div.location
                 strong Location
                 br
-                span=user.city + ", " + user.zipcode
+                span=person.city + ", " + person.zipcode
+                if (edit) 
+                    span edit
             div.contact
                 strong Contact
                 br
-                span=user.phone
+                span=person.phone
+                if (edit) 
+                    span edit
                     
     div#column_right
         div.column_right_content
             div.bio
-                if user.bio
-                    p=user.bio
+                if person.bio
+                    p=person.bio
+                    if (edit) 
+                        span edit
                 else
                     p He's very good!
             div.photos
                 h2 Photos go here
+                if (edit) 
+                    span edit
             div.events
-                h2 Find events hosted by this person
+                h2 
+                    a(href="/event?creator=" + person._id)
+                        Find events hosted by this person
                 
 div.spacer
 include partials/footer
