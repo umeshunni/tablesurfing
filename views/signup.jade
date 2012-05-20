@@ -1,7 +1,31 @@
 !!!
 html
   head
+    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js')
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-      p the signup page
+    div#fb-root
+ 
+    p the signup page
+    
+    script
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '176941975674666',
+            channelUrl : '//localhost:3000/public/channel.html',
+            status     : true, 
+            cookie     : true,
+            xfbml      : true,
+            oauth      : true,
+          });
+        };
+        (function(d){
+           var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+           js = d.createElement('script'); js.id = id; js.async = true;
+           js.src = "//connect.facebook.net/en_US/all.js";
+           d.getElementsByTagName('head')[0].appendChild(js);
+         }(document));
+    
+    div.fb-login-button.
+        Login with Facebook
