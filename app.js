@@ -101,7 +101,6 @@ app.get('/user', function (req, res) {
 
 // ****** User Create ******
 app.post('/user', function(req, res){
-	//req.send("Pending", 200)
 	// Validate the entry
 	var body = req.body
 	var validFields = [
@@ -145,24 +144,33 @@ app.get('/user/:id', function (req, res) {
 	})
 })
 
-// ****** Event List ******
+// ****** Event List/Search ******
 app.get('/event', function (req, res) {
-	var limit = 10
-	Event.find().limit(5).exec(function(err, events){
-	    res.render(__dirname + '/views/eventlist.jade', {title: "eventlist", events: events, page: 1, limit: limit});
+	// GET filters: radius, creator, preference, date
+	var filters = {}
+	if(req.query){
+		if(req.query.creator) filter.creator = req.query.creator
+		if(req.query.preference) filter.preference = req.query.preference
+		if(req.query.date) filter.date = req.query.date
+	}
+	// GET skip/limit
+	var skip = req.param('skip', 0)
+	var limit = req.param('limit', 10)
+	Event.find(filter)
+	    .skip(skip)
+	    .limit(limit)
+		.exec(function(err, events){
+	    res.render(__dirname + '/views/eventlist.jade', {title: "eventlist", events: events, page: (skip/limit + 1), limit: limit});
 	})
 })
 
-// ****** Event Search ******
+// ****** Event Create ******
 app.post('/event', function(req, res){
 	var body = req.body
-	res.send("Pending", 200)
-})
-
-app.post('/event', function(req, res){
-	var body = req.body
+	req.session = {}
+	req.session.id = "12345"
 	if (req.session && req.session.id){
-		var eventObject = new User(body);
+		var eventObject = new Event(body);
 		eventObject.creator = req.session.id
 	
 		eventObject.save(function(err){
@@ -179,7 +187,7 @@ app.post('/event', function(req, res){
 app.get('/event/:id', function (req, res) {
 	var id = req.params.id;
 	// If logged in, profile
-	Event.findOne({id: id}, function(err, event){
+	Event.findOne({_id: id}, function(err, event){
 		if(event)
 			res.render(__dirname + '/views/event.jade', {title: "event/:id", event: event});
 		else

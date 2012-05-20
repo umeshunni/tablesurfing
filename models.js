@@ -23,7 +23,6 @@ var Event = new Schema({
   , creator   : String
   , created   : {type:String, default: Date.now}
   , date      : String
-  , notify    : [{method:String}]
   , status    : {type:String, default: "open"}
   , comment   : String
   , guests    : [{
