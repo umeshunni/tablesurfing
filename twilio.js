@@ -7,7 +7,7 @@ var API_VERSION = '2010-04-01';
 var from = "+16264982253"; // manly table
 
 exports.sendText = function(to, body, cb){
-    var postData = "To=" + to + "&From=" + from + "&Body=" + body;
+    var postData = "To=" + to + "&From=" + from + "&Body=" + body + "&cache=12345";
 	var options = {
         host: API_SERVER,
         port: 443,
@@ -34,3 +34,13 @@ exports.sendText = function(to, body, cb){
 	});
 	
 };
+
+exports.phoneUS = function(number){
+	var regexObj = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+
+	if (regexObj.test(number)) {
+	   return number.replace(regexObj, "+1$1$2$3");
+	} else {
+	    return number// Invalid phone number
+	}
+}

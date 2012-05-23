@@ -10,5 +10,6 @@
 	, "hashlib": ">= 1.0.1"
 	, "facebook":">= 0.0.3"
 	, "everyauth":">= 0.2.32"
+	, "mandrill":">= 0.1.0"
   }
 }

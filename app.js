@@ -8,9 +8,10 @@ var express = require('express')
   , hashlib = require('hashlib')
   , mongoose = require('mongoose')
   , twilio = require('./twilio')
-  , mandrill = require('./mandrill')
+  , mandrill = require('mandrill')
   , everyauth = require('everyauth');
 
+mandrill.call({'key':'9cac9ade-0541-42cf-80d8-bbcc48338bf7'});
 
 mongoose.connect("mongo://localhost/tablesurfing");
 require('./models.js');
@@ -18,8 +19,8 @@ var User = mongoose.model("User", User);
 var Event = mongoose.model("Event", Event);
 
 everyauth.facebook
-.appId('176941975674666')
-.appSecret('36095cf93f7aa776e25b90a4c29e4b64')
+.appId('217422248376051')
+.appSecret('b9723de2871ddcd41b07ffe5a97e7f6a')
 .findOrCreateUser( function(session, accessToken, accessTokenExtra, fbUserMetadata){
 var id = fbUserMetadata.id;
 var promise = this.Promise();
@@ -29,8 +30,8 @@ User.findOne({ facebook: id}, function(err, result) {
 		user = new User();
 		user.facebook = id;
 		user.name = fbUserMetadata.name;
+		user.picture = fbUserMetadata.picture;
 		user.save();
-		user.picture = fbUserMetadata.picture; 
 	} else {
 		user = result;
 	}
@@ -71,14 +72,25 @@ everyauth.helpExpress(app);
 // Routes
 
 app.post('/sms', function(req, res){
+	var from = twilio.phoneUS(req.body.From)
+	var message = "<?xml version='1.0' encoding='UTF-8'?><Response><Sms>"
 	// Where the phone number sms returns
-	User.findOne({phone: req.body.from}, function(err, user){
+	User.findOne({'phone': from}, function(err, host){
 		if(err) return;
-		// Do the action based on the body
-		
+		if(host){
+			// Do the action based on the body
+			message += "Hello " + host.name + ". "
+			// Demo - confirm all the user's pending guests
+			//Event.update({}, {})
+			Event.update({},{$set:{"guests.$.approval":"approved"}},{upsert: true}, function(err){
+				console.log("updated all")
+			});
+			 
+		}
+		message += "Thank you for texting!" + from + "</Sms></Response>"
+		res.contentType('xml')
+		res.send(message)
 	})
-	res.contentType('xml')
-	res.send("<?xml version='1.0' encoding='UTF-8'?><Request><Sms>Thank you for texting!</Sms></Request>")
 })
 
 
@@ -122,7 +134,13 @@ app.post('/user', function(req, res){
 	var id = ""
 	if (auth && auth.facebook.user)
 		var id = auth.facebook.user.id
+	req.body.phone = twilio.phoneUS(req.body.phone)
 	User.update({facebook: id}, req.body, function(err, updated){
+		console.log(updated)
+		// if(req.body.phone)
+		// 	twilio.sendText(req.body.phone, req.body.name + ": your'rr phone works", function(err, res){
+		// 		console.log(res)				
+		// 	})
 		res.redirect('/user')
 	})
 })
@@ -174,7 +192,7 @@ app.post('/event', function(req, res){
 		eventObject.save(function(err){
 			if(err) res.send(err, 400)
 			//res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Post Event", event: eventObject});
-			res.redirect('/event/' + eventObject._id, 200)
+			res.redirect('/event/' + eventObject._id) 
 		});
 	} else {
 		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up"});
@@ -198,13 +216,19 @@ app.get('/event/create', function(req, res){
 // ****** Event Profile ******
 app.get('/event/:id', function (req, res) {
 	var id = req.params.id;
+	if(!req.session.auth || !req.session.auth.loggedIn){
+		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up"});
+	}
 	// If logged in, profile
 	Event.findOne({_id: id}, function(err, event){
 		if(event){
 			var creator = event.creator
 			User.findOne({_id: creator}, function(err, host){
 				if(err) res.send(err, 400)
-				res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Event Info", event: event, host: host});
+				console.log(host)
+				User.findOne({'facebook': req.session.auth.facebook.user.id}, function(err, person){
+					res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Event Info", event: event, host: host, person: person});
+				})
 			})
 		}
 		else
@@ -214,27 +238,29 @@ app.get('/event/:id', function (req, res) {
 
 // ****** Add a guest to an event ******
 app.post('/event/:id/add', function (req, res) {
+	var auth = req.session.auth
+	if(auth && auth.loggedIn) 
 	// Assume agreed to requirements
 	var id = req.params.id;
+	console.log(id);
 	if(req.session.auth && req.session.auth.loggedIn){
+		console.log("logged in")
 		// If logged in, profile
 		Event.findOne({_id: id}, function(err, event){
 			if(err) res.send(err, 400)
-			User.findOne({facebook: req.session.auth.facebook.user.id}, function(err, user){
+			console.log("Got the event")
+			User.findOne({facebook: req.session.auth.facebook.user.id}, function(err, person){
 				if(err) res.send(err, 400)
-				event.guests.add({_id: user.id, name: user.name}, function(err, res){
-					if(err) res.send(err, 400)
-					// Notify the host through their method
-					User.findOne({_id: event.creator}, function(err, host){
-						if(host.notify.indexOf("sms") != -1)
-							twilio.sendText(host.phone, user.name + " has asked to join your event " + event.title)
-						if(host.notify.indexOf("email") != -1)
-							mandrill.sendEmail(host.email, "You created an event", "Zomg you are so good at this", ['event-add'], function(err, res){
-								console.log(res)
-							})
-					})
-					res.render(__dirname + '/views/add.jade', {title: "TableSurfing - Add Event", result: res});
+				console.log("got the person")
+				event.guests.push({_id: person._id, name: person.name, approval: 'pending'})
+				event.save()
+				// Notify the host through their method
+				User.findOne({_id: event.creator}, function(err, host){
+					if(host.notify.indexOf("sms") != -1)
+						twilio.sendText(host.phone, person.name + " has asked to join your event " + event.title)
 				})
+				res.redirect('/event/' + id)
+				//res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Add Event", event: event, person: person});
 			})
 		})
 	} else {
@@ -243,7 +269,7 @@ app.post('/event/:id/add', function (req, res) {
 })
 
 // ****** Confirm/Deny a guest ******
-app.post('/event/:id/guests', function(req, res){
+app.post('/event/:id/guest', function(req, res){
 	// Updates the guest object
 	var body = req.body
 	if(req.session.auth && auth.loggedIn){
@@ -258,7 +284,7 @@ app.post('/event/:id/guests', function(req, res){
 				// event.save(function(err){
 				// 	   if(err) res.send(err, 400)
 				// });
-				res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Guests", event: event});
+				res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Guests", event: event, person: host});
 			})
 		})
 	}

@@ -7,12 +7,12 @@ div#content
                     div.photo
                         if(person && person.picture)
                             img(src=person.picture)
-                            if (edit) 
+                            if (edit=="true") 
                                 span edit
                         else
                             img(src='')
                     div.name
-                        if (edit) 
+                        if (edit=="true") 
                             input(type="text", value=person.name, name="name", placeholder="John Doe")
                         else
                             h2= person.name
@@ -20,7 +20,7 @@ div#content
                     p
                         strong Location
                         br
-                        if (edit) 
+                        if (edit=="true") 
                             p City
                                 input(type="text", value=person.city, name="city", placeholder="city")
                             p State
@@ -34,13 +34,13 @@ div#content
                     p
                         strong Contact
                         br
-                        if (edit)
+                        if (edit=="true")
                             span phone: 
                             input(type="text", value=person.phone, name="phone", placeholder="888-999-0000")
                         else
                             span=person.phone
                         br
-                        if (edit)
+                        if (edit=="true")
                             span email:
                             input(type="text", value=person.email, name="email", placeholder="name@domain.com")
                         else
@@ -49,22 +49,25 @@ div#content
         div#column_right
             div.column_right_content
                 div.bio
-                    if(edit)
+                    if(edit=="true")
                         textarea(value=person.bio, name="bio", rows="3", placeholder="Tell us about yourself")
                     else
                         p=person.bio
                 div.photos
                     h2 Photos go here
-                    if (edit) 
+                    if (edit=="true") 
                         span edit
                 div.events
                     h2 
                         a(href="/event?creator=" + person._id)
-                            if(edit)
+                            if(edit=="true")
                                 a(href="/event?creator=" + person._id) Your events
                             else
                                 a(href="/event?creator=" + person._id) See Events hosted by this person
-                if(edit)
+                    h2 
+                        a(href="/event?creator=" + person._id)
+                            a(href="/event") View Local Events
+                if(edit=="true")
                     input(type='Submit', value='Save')
                         Save
                 

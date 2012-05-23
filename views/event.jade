@@ -6,12 +6,13 @@ include partials/header
             div#description
                 p=event.comment
             div#host
-                if host.picture
+                if (host && host.picture)
                     img(src=host.picture)
                 else
                     img(src='/graphics/placeholder.jpg')
                 p
-                    h3=host.name
+                    h3
+                        a(href='/user/' + host._id)=host.name
                 p
                     host.bio
             div#pictures
@@ -22,18 +23,20 @@ include partials/header
     div.event-right
         div.column_right_content
             div.details
-                p
+                div.item
                     h3 When
                     span=event.date
-                p
+                div.item
                     h3 Where
                     span=host.city + " " + host.state
-                p
+                div.item
                     h3 Cost
-                p
+                div.item
                     h3 Table Size
-                p
-                    a#submit_location.button.orange(href="#") Join now
+
+                form(method="POST", action="/event/" + event._id + "/add")
+                            input.join.button(type='Submit', value='Join now')
+                                Join now
                 each guest in event.guests
                     p=guest.name
                 

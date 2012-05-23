@@ -17,7 +17,7 @@ var User = new Schema({
   , password        : {type: String}
   , preferences     : [{type: String}]
   , notify          : [{type: String}]
-  , bio             : String
+  , bio             : {type: String}
   , photos          : [{type: String}]
 })
 
@@ -28,6 +28,8 @@ var Event = new Schema({
   , created   : {type:String, default: Date.now}
   , date      : String
   , time      : String
+  , city      : String
+  , state     : String
   , status    : {type:String, default: "open"}
   , comment   : String
   , seats      : {type: Number, default: 1}
