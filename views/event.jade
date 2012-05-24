@@ -1,9 +1,13 @@
 include partials/head
 div.yui3-g
-    div.yui3-u-1
-        div#title
-                h1.title=event.title
-    div.yui3-u-3-8
+    div.yui3-u-1-24
+    div.yui3-u-11-12
+        div.title
+            h1.title=event.title
+    div.yui3-u-1-24
+div.yui3-g
+    div.yui3-u-1-24
+    div.yui3-u-1-3
         div.event_left
             div.column_left_content
                 div#description
@@ -23,7 +27,7 @@ div.yui3-g
                     br
                     span=host.city + ", " + host.zipcode
     div.yui3-u-1-24
-    div.yui3-u-7-12
+    div.yui3-u-13-24
         div.event_right
             div.column_right_content
                 div.details
@@ -35,13 +39,16 @@ div.yui3-g
                         span=host.city + " " + host.state
                     div.item
                         h3 Cost
+                        span= event.cost
                     div.item
-                        h3 Table Size
+                        h3 Available Seats
+                        span= event.seats - event.guests.length
 
-                    form(method="POST", action="/event/" + event._id + "/add")
+                    form(method="POST", action="/event/" + event._id)
                                 input.join.button(type='Submit', value='Join now')
                                     Join now
                     each guest in event.guests
                         p=guest.name
+    div.yui3-u-1-24
 div.spacer
 include partials/foot

@@ -48,7 +48,7 @@ everyauth.facebook
 	});
 	return promise;
 })
-.redirectPath('/user');
+.redirectPath('/last');
 
 var app = module.exports = express.createServer();
 
@@ -116,6 +116,10 @@ app.get('/home', function (req, res) {
 	
 });
 
+app.get('/last', function(req, res){
+	res.redirect('back')
+})
+
 // ****** User Profile / Signup / Login ******
 app.get('/user', function (req, res) {
 	var auth = req.session.auth
@@ -151,13 +155,6 @@ app.get('/user/:id', function (req, res) {
 	// If logged in, profile
 	User.findOne({_id: id}, function(err, result){
 		if(err) res.send(err, 400)
-		result = { name: 'Alex Swan',
-  facebook: '17823529',
-  _id: "4fb8c9e24dc1ed534b000001",
-  photos: [],
-  notify: [],
-  preferences: [],
-  created: '1337510370205' }
 		res.render(__dirname + '/views/user.jade', {title: "TableSurfing - User Profile", person: result, edit:"false"});
 	})
 })
@@ -216,28 +213,25 @@ app.get('/event/create', function(req, res){
 // ****** Event Profile ******
 app.get('/event/:id', function (req, res) {
 	var id = req.params.id;
-	if (req.session.auth && req.session.auth.loggedIn){
-		// If logged in, profile
-		Event.findOne({_id: id}, function(err, event){
-			if(event){
-				var creator = event.creator
-				User.findOne({_id: creator}, function(err, host){
-					if(err) res.send(err, 400)
-					User.findOne({'facebook': req.session.auth.facebook.user.id}, function(err, person){
-						res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Event Info", event: event, host: host, person: person});
-					})
+	var facebookid = (req.session.auth && req.session.auth.loggedIn) ? req.session.auth.facebook.user.id : ""
+	// If logged in, profile
+	Event.findOne({_id: id}, function(err, event){
+		if(event){
+			var creator = event.creator
+			User.findOne({_id: creator}, function(err, host){
+				if(err) res.send(err, 400)
+				User.findOne({'facebook': facebookid}, function(err, person){
+					res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Event Info", event: event, host: host, person: person});
 				})
-			}
-			else
-				res.send(err, 400)
-		})
-	} else {
-		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up"});
-	}
+			})
+		}
+		else
+			res.send(err, 400)
+	})
 })
 
 // ****** Add a guest to an event ******
-app.post('/event/:id/add', function (req, res) {
+app.post('/event/:id', function (req, res) {
 	var auth = req.session.auth
 	if(auth && auth.loggedIn) 
 	// Assume agreed to requirements

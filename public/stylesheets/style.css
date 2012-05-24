@@ -136,38 +136,39 @@ div.spacer
     padding-top: 5px;
 }
 
-.event-preview {
+.event_preview {
 	padding: 25px;
 	width: 360px;
 	background-color: #eee;
 }
-.event-preview label{
+.event_preview label{
 	display:block;
 	padding: 2px 0;
 }
 
-.event-preview .button{
+.event_preview .button{
 	margin-top:20px;
 }
 
 .event_left
 {
-    margin-right:20px; 
     float:left; 
     min-height:400px;
-padding-top:12px;
+    padding-top:12px;
+    width:100%;
 }
 .event_right
 {
-    float:left; 
-    padding-top:60px;
+    float:right; 
+    min-height:400px;
+    padding-top:12px;
+    width:100%;
 }
 
 .event_left .column_left_content
 {
 	background-color:#eee;
 	padding:10px;
-	margin-left:100px;
 }
 
 .event_right .column_right_content
@@ -186,8 +187,7 @@ padding-top:12px;
 	padding:3px;
 	font-weight:bold;
 }
-.event_left .title{
-	margin-left:100px;
+.title{
 	padding: 10px;
 	font-size: 24px;
 }
