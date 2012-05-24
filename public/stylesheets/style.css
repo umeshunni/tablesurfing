@@ -1,6 +1,6 @@
 #doc {
     margin:auto; /* center in viewport */
-    width: 970px; /* fix page width */
+    width: 980px; /* fix page width */
 }
 
 body {
@@ -34,7 +34,7 @@ body {
     width:auto; 
     display:block;
 }
-#column_left
+/*#column_left
 {
     width:470px; 
     margin-right:20px; 
@@ -45,7 +45,7 @@ body {
 {
     width:470px; 
     float:left; 
-}
+}*/
 
 /* 
 div.spacer, solve an issue with #container height
@@ -59,7 +59,7 @@ div.spacer
     display:block;
 }
 
-#footer
+.footer
 {
     width:auto; 
     display:block; 

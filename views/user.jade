@@ -1,7 +1,7 @@
 include partials/head
-div#content
-    form(method="POST")
-        div#column_left
+form(method="POST")
+    div.yui3-g
+        div.yui3-u-3-5
             div.column_left_content
                 div.photo_container
                     div.photo
@@ -45,8 +45,7 @@ div#content
                             input(type="text", value=person.email, name="email", placeholder="name@domain.com")
                         else
                             span=person.phone
-                    
-        div#column_right
+        div.yui3-u-2-5            
             div.column_right_content
                 div.bio
                     if(edit=="true")
@@ -70,6 +69,6 @@ div#content
                 if(edit=="true")
                     input(type='Submit', value='Save')
                         Save
-                
+            
 div.spacer
 include partials/foot
