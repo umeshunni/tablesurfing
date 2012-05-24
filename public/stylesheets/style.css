@@ -1,3 +1,8 @@
+#doc {
+    margin:auto; /* center in viewport */
+    width: 970px; /* fix page width */
+}
+
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }

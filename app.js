@@ -63,7 +63,7 @@ app.configure(function(){
   app.use(express.cookieParser());
   app.use(express.session({ secret: "brown chicken brown cow" }));
   app.use(express.static(__dirname + '/public'));
-//  app.use(everyauth.middleware());
+  app.use(everyauth.middleware());
   app.use(app.router);
 });
 
