@@ -27,11 +27,12 @@ body {
     border-bottom:solid 1px #ccc;
 }
 
-#navbar
+#hd a
 {
+    color: #FFF;
     width:auto; 
     display:block; 
-    height:24px;
+    height:22px;
 }
 
 #main

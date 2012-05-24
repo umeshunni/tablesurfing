@@ -6,69 +6,71 @@ form(method="POST")
             div#title
                 h1= person.name
         div.yui3-u-7-12
-            div.column_left_content
-                div.photo_container
-                    div.photo
-                        if(person && person.picture)
-                            img(src=person.picture)
+            div.event_left
+                div.column_left_content
+                    div.photo_container
+                        div.photo
+                            if(person && person.picture)
+                                img(src=person.picture)
+                                if (edit=="true") 
+                                    span edit
+                            else
+                                img(src='')
+                    div.location
+                        p
+                            strong Location
+                            br
                             if (edit=="true") 
-                                span edit
-                        else
-                            img(src='')
-                div.location
-                    p
-                        strong Location
-                        br
-                        if (edit=="true") 
-                            p City
-                                input(type="text", value=person.city, name="city", placeholder="city")
-                            p State
-                                input(type="text", value=person.state, name="state", placeholder="State")
-                            p Zip code:
-                                input(type="text", value=person.zipcode, name="zipcode", placeholder="zip")
-                        else
-                            span=person.city + ", " + person.state + " " + person.zipcode
+                                p City
+                                    input(type="text", value=person.city, name="city", placeholder="city")
+                                p State
+                                    input(type="text", value=person.state, name="state", placeholder="State")
+                                p Zip code:
+                                    input(type="text", value=person.zipcode, name="zipcode", placeholder="zip")
+                            else
+                                span=person.city + ", " + person.state + " " + person.zipcode
 
-                div.contact
-                    p
-                        strong Contact
-                        br
-                        if (edit=="true")
-                            span phone: 
-                            input(type="text", value=person.phone, name="phone", placeholder="888-999-0000")
-                        else
-                            span=person.phone
-                        br
-                        if (edit=="true")
-                            span email:
-                            input(type="text", value=person.email, name="email", placeholder="name@domain.com")
-                        else
-                            span=person.phone
+                    div.contact
+                        p
+                            strong Contact
+                            br
+                            if (edit=="true")
+                                span phone: 
+                                input(type="text", value=person.phone, name="phone", placeholder="888-999-0000")
+                            else
+                                span=person.phone
+                            br
+                            if (edit=="true")
+                                span email:
+                                input(type="text", value=person.email, name="email", placeholder="name@domain.com")
+                            else
+                                span=person.phone
         div.yui3-u-1-24
         div.yui3-u-3-8
-            div.column_right_content
-                div.bio
+            div.event_right
+                div.column_right_content
+                    div.bio
+                        if(edit=="true")
+                            textarea(value=person.bio, name="bio", rows="3", placeholder="Tell us about yourself")
+                        else
+                            p=person.bio
+                    div.photos
+                        h2 Photos go here
+                        if (edit=="true") 
+                            span edit
+                    div.events
+                        h2 
+                            a(href="/event?creator=" + person._id)
+                                if(edit=="true")
+                                    a(href="/event?creator=" + person._id) Your events
+                                else
+                                    a(href="/event?creator=" + person._id) See Events hosted by this person
+                        h2 
+                            a(href="/event?creator=" + person._id)
+                                a(href="/event") View Local Events
                     if(edit=="true")
-                        textarea(value=person.bio, name="bio", rows="3", placeholder="Tell us about yourself")
-                    else
-                        p=person.bio
-                div.photos
-                    h2 Photos go here
-                    if (edit=="true") 
-                        span edit
-                div.events
-                    h2 
-                        a(href="/event?creator=" + person._id)
-                            if(edit=="true")
-                                a(href="/event?creator=" + person._id) Your events
-                            else
-                                a(href="/event?creator=" + person._id) See Events hosted by this person
-                    h2 
-                        a(href="/event?creator=" + person._id)
-                            a(href="/event") View Local Events
-                if(edit=="true")
-                    input(type='Submit', value='Save')
-                        Save
+                        input(type='Submit', value='Save')
+                            Save
             
 div.spacer
 include partials/foot
