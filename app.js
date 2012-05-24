@@ -18,26 +18,33 @@ require('./models.js');
 var User = mongoose.model("User", User);
 var Event = mongoose.model("Event", Event);
 
+// tablesurfing.org domain
+// .appId('217422248376051')
+// .appSecret('b9723de2871ddcd41b07ffe5a97e7f6a')
+// localhost
+// .appId('419312468089420')
+// .appSecret('6f1c51f6ea13cf58c9f42d1c1feb2bac')
+
 everyauth.facebook
-.appId('217422248376051')
-.appSecret('b9723de2871ddcd41b07ffe5a97e7f6a')
+.appId('419312468089420')
+.appSecret('6f1c51f6ea13cf58c9f42d1c1feb2bac')
+.fields('id,name,email,picture,location')
 .findOrCreateUser( function(session, accessToken, accessTokenExtra, fbUserMetadata){
-var id = fbUserMetadata.id;
-var promise = this.Promise();
-User.findOne({ facebook: id}, function(err, result) {
-	var user;
-	if(!result) {
-		user = new User();
-		user.facebook = id;
-		user.name = fbUserMetadata.name;
-		user.picture = fbUserMetadata.picture;
-		user.save();
-	} else {
-		user = result;
-	}
-	// Set session variables I suppose
-	
-	promise.fulfill(user);
+	var id = fbUserMetadata.id;
+	var promise = this.Promise();
+	User.findOne({ facebook: id}, function(err, result) {
+		var user;
+		if(!result) {
+			user = new User();
+			user.facebook = id;
+			user.name = fbUserMetadata.name;
+			user.picture = fbUserMetadata.picture;
+			user.email = fbUserMetadata.email;
+			user.save();
+		} else {
+			user = result;
+		}
+		promise.fulfill(user);
 	});
 	return promise;
 })
@@ -66,8 +73,6 @@ app.configure('development', function(){
 app.configure('production', function(){
   app.use(express.errorHandler());
 });
-
-everyauth.helpExpress(app);
 
 // Routes
 
@@ -216,24 +221,25 @@ app.get('/event/create', function(req, res){
 // ****** Event Profile ******
 app.get('/event/:id', function (req, res) {
 	var id = req.params.id;
-	if(!req.session.auth || !req.session.auth.loggedIn){
+	if (req.session.auth && req.session.auth.loggedIn){
+		// If logged in, profile
+		Event.findOne({_id: id}, function(err, event){
+			if(event){
+				var creator = event.creator
+				User.findOne({_id: creator}, function(err, host){
+					if(err) res.send(err, 400)
+					console.log(host)
+					User.findOne({'facebook': req.session.auth.facebook.user.id}, function(err, person){
+						res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Event Info", event: event, host: host, person: person});
+					})
+				})
+			}
+			else
+				res.send(err, 400)
+		})
+	} else {
 		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up"});
 	}
-	// If logged in, profile
-	Event.findOne({_id: id}, function(err, event){
-		if(event){
-			var creator = event.creator
-			User.findOne({_id: creator}, function(err, host){
-				if(err) res.send(err, 400)
-				console.log(host)
-				User.findOne({'facebook': req.session.auth.facebook.user.id}, function(err, person){
-					res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Event Info", event: event, host: host, person: person});
-				})
-			})
-		}
-		else
-			res.send(err, 400)
-	})
 })
 
 // ****** Add a guest to an event ******
