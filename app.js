@@ -141,11 +141,6 @@ app.post('/user', function(req, res){
 		var id = auth.facebook.user.id
 	req.body.phone = twilio.phoneUS(req.body.phone)
 	User.update({facebook: id}, req.body, function(err, updated){
-		console.log(updated)
-		// if(req.body.phone)
-		// 	twilio.sendText(req.body.phone, req.body.name + ": your'rr phone works", function(err, res){
-		// 		console.log(res)				
-		// 	})
 		res.redirect('/user')
 	})
 })
@@ -228,7 +223,6 @@ app.get('/event/:id', function (req, res) {
 				var creator = event.creator
 				User.findOne({_id: creator}, function(err, host){
 					if(err) res.send(err, 400)
-					console.log(host)
 					User.findOne({'facebook': req.session.auth.facebook.user.id}, function(err, person){
 						res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Event Info", event: event, host: host, person: person});
 					})
@@ -248,16 +242,12 @@ app.post('/event/:id/add', function (req, res) {
 	if(auth && auth.loggedIn) 
 	// Assume agreed to requirements
 	var id = req.params.id;
-	console.log(id);
 	if(req.session.auth && req.session.auth.loggedIn){
-		console.log("logged in")
 		// If logged in, profile
 		Event.findOne({_id: id}, function(err, event){
 			if(err) res.send(err, 400)
-			console.log("Got the event")
 			User.findOne({facebook: req.session.auth.facebook.user.id}, function(err, person){
 				if(err) res.send(err, 400)
-				console.log("got the person")
 				event.guests.push({_id: person._id, name: person.name, approval: 'pending'})
 				event.save()
 				// Notify the host through their method

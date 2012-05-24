@@ -1,44 +1,47 @@
 include partials/head
-    div.event-left
-        div 
-            h3.title=event.title
-        div.column_left_content
-            div#description
-                p=event.comment
-            div#host
-                if (host && host.picture)
-                    img(src=host.picture)
-                else
-                    img(src='/graphics/placeholder.jpg')
-                p
-                    h3
-                        a(href='/user/' + host._id)=host.name
-                p
-                    host.bio
-            div#pictures
-                strong="Photos from " + host.name
-                br
-                span=host.city + ", " + host.zipcode
-                    
-    div.event-right
-        div.column_right_content
-            div.details
-                div.item
-                    h3 When
-                    span=event.date
-                div.item
-                    h3 Where
-                    span=host.city + " " + host.state
-                div.item
-                    h3 Cost
-                div.item
-                    h3 Table Size
+div.yui3-g
+    div.yui3-u-1
+        div#title
+                h1.title=event.title
+    div.yui3-u-3-8
+        div.event_left
+            div.column_left_content
+                div#description
+                    p=event.comment
+                div#host
+                    if (host && host.picture)
+                        img(src=host.picture)
+                    else
+                        img(src='/graphics/placeholder.jpg')
+                    p
+                        h3
+                            a(href='/user/' + host._id)=host.name
+                    p
+                        host.bio
+                div#pictures
+                    strong="Photos from " + host.name
+                    br
+                    span=host.city + ", " + host.zipcode
+    div.yui3-u-1-24
+    div.yui3-u-7-12
+        div.event_right
+            div.column_right_content
+                div.details
+                    div.item
+                        h3 When
+                        span=event.date
+                    div.item
+                        h3 Where
+                        span=host.city + " " + host.state
+                    div.item
+                        h3 Cost
+                    div.item
+                        h3 Table Size
 
-                form(method="POST", action="/event/" + event._id + "/add")
-                            input.join.button(type='Submit', value='Join now')
-                                Join now
-                each guest in event.guests
-                    p=guest.name
-                
+                    form(method="POST", action="/event/" + event._id + "/add")
+                                input.join.button(type='Submit', value='Join now')
+                                    Join now
+                    each guest in event.guests
+                        p=guest.name
 div.spacer
 include partials/foot

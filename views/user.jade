@@ -1,7 +1,11 @@
 include partials/head
 form(method="POST")
+    input(type="hidden", value=person.name, name="name")
     div.yui3-g
-        div.yui3-u-3-5
+        div.yui3-u-1
+            div#title
+                h1= person.name
+        div.yui3-u-7-12
             div.column_left_content
                 div.photo_container
                     div.photo
@@ -11,11 +15,6 @@ form(method="POST")
                                 span edit
                         else
                             img(src='')
-                    div.name
-                        if (edit=="true") 
-                            input(type="text", value=person.name, name="name", placeholder="John Doe")
-                        else
-                            h2= person.name
                 div.location
                     p
                         strong Location
@@ -45,7 +44,8 @@ form(method="POST")
                             input(type="text", value=person.email, name="email", placeholder="name@domain.com")
                         else
                             span=person.phone
-        div.yui3-u-2-5            
+        div.yui3-u-1-24
+        div.yui3-u-3-8
             div.column_right_content
                 div.bio
                     if(edit=="true")

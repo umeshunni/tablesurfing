@@ -1,20 +1,19 @@
 include partials/head
-div#content
-    div#column_left
+div.yui3-g
+    div.yui3-u-3-8
         div.column_left_content
             div.filters
                 p This is where filters go
                 form(method="GET")
                     input(type="text")
-    div#column_right
+    div.yui3-u-1-24
+    div.yui3-u-7-12
         div.column_right_content
-            ul
-                each event in events
-                    li
-                        p
-                        a(href='event/' + event._id)=event.title
-                        p=event.date + " " + event.time
-                        p=event.city + " " + event.state
+            each event in events
+                div
+                    a(href='event/' + event._id)=event.title
+                    p=event.date + " " + event.time
+                    p=event.city + " " + event.state
             if (events.length == 0)
                 p There doesn't seem to be anything here
                 a(href="/event/create") Create an Event

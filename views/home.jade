@@ -2,22 +2,20 @@
 include partials/head
 div.yui3-g
     div.yui3-u-1-2
-        div#column_left
-            div.column_left_content
-                h3#callout Find a place at a table
-                p#subtext Eat with people near you
-                div.search
-                    input#location.location (type='text' autocomplete='off' placeholder='Where are you going?')
-                    a#submit_location.button.orange Search
-                div#description We want to redefine the traditional restaurant and bring the experience home. Help capture the community building that is lost living in a large city by getting to know your neighbors in one of the oldest traditions in human history, sharing a meal.
+        div.column_left_content
+            h3#callout Find a place at a table
+            p#subtext Eat with people near you
+            div.search
+                input#location.location (type='text' autocomplete='off' placeholder='Where are you going?')
+                a#submit_location.button.orange Search
+            div#description We want to redefine the traditional restaurant and bring the experience home. Help capture the community building that is lost living in a large city by getting to know your neighbors in one of the oldest traditions in human history, sharing a meal.
     div.yui3-u-1-2
-        div#column_right
-            div.column_right_content
-                if(events[0])
-                    div.event-preview
-                        img(src='graphics/food1_350x250.png')
-                        label Hosted by: Jeff The Chef
-                        a#submit_location.button.orange(href="/event/" + events[0]._id) Join this table
+        div.column_right_content
+            if(events[0])
+                div.event-preview
+                    img(src='graphics/food1_350x250.png')
+                    label Hosted by: Jeff The Chef
+                    a#submit_location.button.orange(href="/event/" + events[0]._id) Join this table
 div.spacer
 
 include partials/foot
