@@ -12,7 +12,16 @@ div.yui3-g
                 div.filters
                     p This is where filters go
                     form(method="GET")
-                        input(type="text")
+                        p City
+                            input(type="text", name="city")
+                        p Date
+                            input(type="text", name="date")
+                        p Host
+                            input(type="text", name="creator")
+                        p Free Seats
+                            input(type="text", name="seats")
+                        p
+                            input(type="submit", value="Filter")
     div.yui3-u-1-24
     div.yui3-u-7-12
         div.event_right

@@ -1,6 +1,6 @@
 {
-    "name": "application-name"
-  , "version": "0.0.1"
+    "name": "tablesurfing"
+  , "version": "0.1.1"
   , "private": true
   , "dependencies": {
       "express": "2.5.8"
