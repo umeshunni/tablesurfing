@@ -111,7 +111,7 @@ app.get('/home', function (req, res) {
 	// Get 3 events for the data object
 	Event.find({}).limit(3).exec(function(err, events){
 		if(err) res.send(err, 400)
-	    res.render(__dirname + '/views/home.jade', {title: "TableSurfing - Home", events: events});
+	    res.render(__dirname + '/views/home.jade', {title: "Home", events: events});
 	})
 	
 });
@@ -127,11 +127,11 @@ app.get('/user', function (req, res) {
 	if(auth && auth.loggedIn){
 		User.findOne({facebook: auth.facebook.user.id}, function(err, person){
 			if(err) res.send(err, 400)
-			res.render(__dirname + '/views/user.jade', {title: "TableSurfing - User Profile", person: person, edit: "true"});
+			res.render(__dirname + '/views/user.jade', {title: "User Profile", person: person, edit: "true"});
 		})
 	}
 	else{
-		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up"});
+		res.render(__dirname + '/views/signup.jade', {title: "Sign Up"});
 	}	
 })
 
@@ -155,7 +155,7 @@ app.get('/user/:id', function (req, res) {
 	// If logged in, profile
 	User.findOne({_id: id}, function(err, result){
 		if(err) res.send(err, 400)
-		res.render(__dirname + '/views/user.jade', {title: "TableSurfing - User Profile", person: result, edit:"false"});
+		res.render(__dirname + '/views/user.jade', {title: "User Profile", person: result, edit:"false"});
 	})
 })
 
@@ -176,7 +176,7 @@ app.get('/event', function (req, res) {
 	    .skip(skip)
 	    .limit(limit)
 		.exec(function(err, events){
-	    res.render(__dirname + '/views/eventlist.jade', {title: "TableSurfing - Events List", events: events, page: (skip/limit + 1), limit: limit});
+	    res.render(__dirname + '/views/eventlist.jade', {title: "Events List", events: events, page: (skip/limit + 1), limit: limit});
 	})
 })
 
@@ -188,11 +188,11 @@ app.post('/event', function(req, res){
 	
 		eventObject.save(function(err){
 			if(err) res.send(err, 400)
-			//res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Post Event", event: eventObject});
+			//res.render(__dirname + '/views/event.jade', {title: "Post Event", event: eventObject});
 			res.redirect('/event/' + eventObject._id) 
 		});
 	} else {
-		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up"});
+		res.render(__dirname + '/views/signup.jade', {title: "Sign Up"});
 	}
 })
 
@@ -202,10 +202,10 @@ app.get('/event/create', function(req, res){
 		var facebookid = auth.facebook.user.id
 		User.findOne({"facebook":facebookid}, function (err, host){
 			if(err) res.send(err, 400)
-			res.render(__dirname + '/views/eventcreate.jade', {title: "TableSurfing - Create Event", host: host});
+			res.render(__dirname + '/views/eventcreate.jade', {title: "Create Event", host: host});
 		})
 	} else {
-		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up"});
+		res.render(__dirname + '/views/signup.jade', {title: "Sign Up"});
 	}
 	
 })
@@ -221,7 +221,7 @@ app.get('/event/:id', function (req, res) {
 			User.findOne({_id: creator}, function(err, host){
 				if(err) res.send(err, 400)
 				User.findOne({'facebook': facebookid}, function(err, person){
-					res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Event Info", event: event, host: host, person: person});
+					res.render(__dirname + '/views/event.jade', {title: "Event Info", event: event, host: host, person: person});
 				})
 			})
 		}
@@ -250,11 +250,11 @@ app.post('/event/:id', function (req, res) {
 						twilio.sendText(host.phone, person.name + " has asked to join your event " + event.title)
 				})
 				res.redirect('/event/' + id)
-				//res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Add Event", event: event, person: person});
+				//res.render(__dirname + '/views/event.jade', {title: "Add Event", event: event, person: person});
 			})
 		})
 	} else {
-		res.render(__dirname + '/views/signup.jade', {title: "TableSurfing - Sign Up"});
+		res.render(__dirname + '/views/signup.jade', {title: "Sign Up"});
 	}
 })
 
@@ -274,7 +274,7 @@ app.post('/event/:id/guest', function(req, res){
 				// event.save(function(err){
 				// 	   if(err) res.send(err, 400)
 				// });
-				res.render(__dirname + '/views/event.jade', {title: "TableSurfing - Guests", event: event, person: host});
+				res.render(__dirname + '/views/event.jade', {title: "Guests", event: event, person: host});
 			})
 		})
 	}
