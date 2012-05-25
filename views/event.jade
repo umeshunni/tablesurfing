@@ -45,8 +45,8 @@ div.yui3-g
                         span= event.seats - event.guests.length
 
                     form(method="POST", action="/event/" + event._id)
-                                input.join.button(type='Submit', value='Join now')
-                                    Join now
+                        input.join.button(type='Submit', value='Join now')
+                            Join now
                     each guest in event.guests
                         p=guest.name
     div.yui3-u-1-24
