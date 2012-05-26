@@ -145,6 +145,7 @@ app.post('/user', function(req, res){
 	if (auth && auth.facebook.user)
 		var id = auth.facebook.user.id
 	req.body.phone = twilio.phoneUS(req.body.phone)
+	if(!req.body.notify) req.body.notify = []
 	User.update({facebook: id}, req.body, function(err, updated){
 		res.redirect('/user')
 	})
