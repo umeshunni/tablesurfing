@@ -13,7 +13,8 @@ var express = require('express')
 
 mandrill.call({'key':'9cac9ade-0541-42cf-80d8-bbcc48338bf7'});
 
-mongoose.connect("mongo://localhost/tablesurfing");
+//mongoose.connect("mongo://localhost/tablesurfing"); // Old and busted
+mongoose.connect("mongodb://nodeuser:oompabeard@staff.mongohq.com:10066/tablesurfing"); // New hotness
 require('./models.js');
 var User = mongoose.model("User", User);
 var Event = mongoose.model("Event", Event);

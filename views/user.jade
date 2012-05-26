@@ -18,30 +18,30 @@ form(method="POST")
                                 img(src='')
                     div.location
                         p
-                            strong Location
+                            h3 Location
                             br
                             if (edit=="true") 
                                 p City
                                     input(type="text", value=person.city, name="city", placeholder="city")
                                 p State
                                     input(type="text", value=person.state, name="state", placeholder="State")
-                                p Zip code:
+                                p Zip code
                                     input(type="text", value=person.zipcode, name="zipcode", placeholder="zip")
                             else
                                 span=person.city + ", " + person.state + " " + person.zipcode
 
                     div.contact
                         p
-                            strong Contact
+                            h3 Contact
                             br
                             if (edit=="true")
-                                span phone: 
+                                p phone: 
                                 input(type="text", value=person.phone, name="phone", placeholder="888-999-0000")
                             else
                                 span=person.phone
                             br
                             if (edit=="true")
-                                span email:
+                                p email:
                                 input(type="text", value=person.email, name="email", placeholder="name@domain.com")
                             else
                                 span=person.phone
@@ -50,12 +50,13 @@ form(method="POST")
             div.event_right
                 div.column_right_content
                     div.bio
+                        h3 About
                         if(edit=="true")
-                            textarea(value=person.bio, name="bio", rows="3", placeholder="Tell us about yourself")
+                            textarea(name="bio", rows="3", placeholder="Tell us about yourself")= person.bio
                         else
                             p=person.bio
                     div.photos
-                        h2 Photos go here
+                        h3 Photos
                         if (edit=="true") 
                             span edit
                     div.events

@@ -43,7 +43,7 @@ div.yui3-g
                     div.item
                         h3 Available Seats
                         span= event.seats - event.guests.length
-
+//- Three buttons: Join, Pending, Approved
                     form(method="POST", action="/event/" + event._id)
                         input.join.button(type='Submit', value='Join now')
                             Join now
