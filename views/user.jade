@@ -35,17 +35,17 @@ form(method="POST")
                             h3 Contact
                             br
                             if (edit=="true")
-                                p phone: 
-                                input(type="text", value=person.phone, name="phone", placeholder="888-999-0000")
+                                p Phone
+                                    input(type="text", value=person.phone, name="phone", placeholder="888-999-0000")
                                 br
                                 input(type="checkbox", name="notify", value="sms", checked=(person.notify.indexOf("sms")!=-1))
                                 span SMS Notifications
                             else
                                 span=person.phone
-                            br
+                        p
                             if (edit=="true")
-                                p email:
-                                input(type="text", value=person.email, name="email", placeholder="name@domain.com")
+                                p Email
+                                    input(type="text", value=person.email, name="email", placeholder="name@domain.com")
                                 br
                                 input(type="checkbox", name="notify", value="email", checked=(person.notify.indexOf("email")!=-1))
                                 span Email notifications
