@@ -24,7 +24,7 @@ var User = new Schema({
 var Event = new Schema({
     id        : ObjectId
   , title     : String
-  , creator   : String
+  , _creator   : { type: Schema.ObjectId, ref: 'User' }
   , created   : {type:String, default: Date.now}
   , date      : String
   , time      : String
@@ -34,12 +34,7 @@ var Event = new Schema({
   , comment   : String
   , seats      : {type: Number, default: 1}
   , cost       : String
-  , guests    : [{
-          id       : String
-        , name     : String
-        , date     : {type:String, default: Date.now}
-        , approval : {type:String, default:"pending"}
-    }]
+  , _guests    : [{ type: Schema.ObjectId, ref: 'User' }]
   , photos: [{type : String}]
 });
 

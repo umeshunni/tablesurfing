@@ -101,193 +101,38 @@ app.post('/sms', function(req, res){
 	})
 })
 
+var site = require('./routes/site')
+  , user = require('./routes/user')
+  , event = require('./routes/event')
+
 
 // ****** Root ******
-app.get('/', function (req, res) {
-	res.redirect('/home')
-});
+app.get('/', site.index )
+app.get('/home', site.home)
+app.get('/last', site.last)
+app.get('/login', site.login)
 
-// ****** Home Page ******
-app.get('/home', function (req, res) {
-	// If there is a user, get that object, render a partial
-	// Get 3 events for the data object
-	Event.find({}).limit(3).exec(function(err, events){
-		if(err) res.send(err, 400)
-	    res.render(__dirname + '/views/home.jade', {title: "Home", events: events});
-	})
-	
-});
 
-app.get('/last', function(req, res){
-	res.redirect('back')
-})
+// ****** User ******
+app.get('/user/:id', user.view)
+app.get('/user', ensureAuthenticated, user.get)
+app.post('/user', ensureAuthenticated, user.update)
 
-// ****** User Profile / Signup / Login ******
-app.get('/user', function (req, res) {
-	var auth = req.session.auth
-	// If logged in, profile
-	if(auth && auth.loggedIn){
-		User.findOne({facebook: auth.facebook.user.id}, function(err, person){
-			if(err) res.send(err, 400)
-			res.render(__dirname + '/views/user.jade', {title: "User Profile", person: person, edit: "true"});
-		})
-	}
-	else{
-		res.render(__dirname + '/views/signup.jade', {title: "Sign Up"});
-	}	
-})
-
-// ****** User Update ******
-app.post('/user', function(req, res){
-	// Validate the entry
-	var body = req.body
-	var auth = req.session.auth
-	var id = ""
-	if (auth && auth.facebook.user)
-		var id = auth.facebook.user.id
-	req.body.phone = twilio.phoneUS(req.body.phone)
-	if(!req.body.notify) req.body.notify = []
-	User.update({facebook: id}, req.body, function(err, updated){
-		res.redirect('/user')
-	})
-})
-
-// ****** User Profile ******
-app.get('/user/:id', function (req, res) {
-	var id = req.params.id;
-	// If logged in, profile
-	User.findOne({_id: id}, function(err, result){
-		if(err) res.send(err, 400)
-		res.render(__dirname + '/views/user.jade', {title: "User Profile", person: result, edit:"false"});
-	})
-})
-
-// ****** Event List/Search ******
-app.get('/event', function (req, res) {
-	// GET filters: city, creator, preference, date
-	var filter = {}
-	if(req.query){
-		if(req.query.creator) filter.creator = req.query.creator
-		if(req.query.preference) filter.preference = req.query.preference.split(',')
-		if(req.query.date) filter.date = req.query.date
-		if(req.query.city) filter.city = req.query.city
-	}
-	// GET skip/limit
-	var skip = req.param('skip', 0)
-	var limit = req.param('limit', 10)
-	Event.find(filter)
-	    .skip(skip)
-	    .limit(limit)
-		.exec(function(err, events){
-	    res.render(__dirname + '/views/eventlist.jade', {title: "Events List", events: events, page: (skip/limit + 1), limit: limit});
-	})
-})
-
-// ****** Event Create ******
-app.post('/event', function(req, res){
-	var body = req.body
-	if (req.session.auth && req.session.auth.loggedIn){
-		var eventObject = new Event(body);
-	
-		eventObject.save(function(err){
-			if(err) res.send(err, 400)
-			//res.render(__dirname + '/views/event.jade', {title: "Post Event", event: eventObject});
-			res.redirect('/event/' + eventObject._id) 
-		});
-	} else {
-		res.render(__dirname + '/views/signup.jade', {title: "Sign Up"});
-	}
-})
-
-app.get('/event/create', function(req, res){
-	if (req.session.auth && req.session.auth.loggedIn){
-		var auth = req.session.auth
-		var facebookid = auth.facebook.user.id
-		User.findOne({"facebook":facebookid}, function (err, host){
-			if(err) res.send(err, 400)
-			res.render(__dirname + '/views/eventcreate.jade', {title: "Create Event", host: host});
-		})
-	} else {
-		res.render(__dirname + '/views/signup.jade', {title: "Sign Up"});
-	}
-	
-})
-
-// ****** Event Profile ******
-app.get('/event/:id', function (req, res) {
-	var id = req.params.id;
-	var facebookid = (req.session.auth && req.session.auth.loggedIn) ? req.session.auth.facebook.user.id : ""
-	// If logged in, profile
-	Event.findOne({_id: id}, function(err, event){
-		if(event){
-			var creator = event.creator
-			User.findOne({_id: creator}, function(err, host){
-				if(err) res.send(err, 400)
-				User.findOne({'facebook': facebookid}, function(err, person){
-					res.render(__dirname + '/views/event.jade', {title: "Event Info", event: event, host: host, person: person});
-				})
-			})
-		}
-		else
-			res.send(err, 400)
-	})
-})
-
-// ****** Add a guest to an event ******
-app.post('/event/:id', function (req, res) {
-	var auth = req.session.auth
-	if(auth && auth.loggedIn) 
-	// Assume agreed to requirements
-	var id = req.params.id;
-	if(req.session.auth && req.session.auth.loggedIn){
-		// If logged in, profile
-		Event.findOne({_id: id}, function(err, event){
-			if(err) res.send(err, 400)
-			User.findOne({facebook: req.session.auth.facebook.user.id}, function(err, person){
-				if(err) res.send(err, 400)
-				event.guests.push({_id: person._id, name: person.name, approval: 'pending'})
-				event.save()
-				// Notify the host through their method
-				User.findOne({_id: event.creator}, function(err, host){
-					if(host.notify.indexOf("sms") != -1)
-						twilio.sendText(host.phone, person.name + " has asked to join your event " + event.title)
-				})
-				res.redirect('/event/' + id)
-				//res.render(__dirname + '/views/event.jade', {title: "Add Event", event: event, person: person});
-			})
-		})
-	} else {
-		res.render(__dirname + '/views/signup.jade', {title: "Sign Up"});
-	}
-})
-
-// ****** Confirm/Deny a guest ******
-app.post('/event/:id/guest', function(req, res){
-	// Updates the guest object
-	var body = req.body
-	if(req.session.auth && auth.loggedIn){
-		User.find({_id:req.session.id}, function(err, host){ // Get the host
-			if(err) res.send(err, 400)
-			Event.find({_id:req.params.id}, function(err, event){
-				if(err)res.send(err, 400)
-				if(event.creator != host._id) res.send("Unauthorized", 401)
-				
-				event.guests = body
-				// This may not be necessary
-				// event.save(function(err){
-				// 	   if(err) res.send(err, 400)
-				// });
-				res.render(__dirname + '/views/event.jade', {title: "Guests", event: event, person: host});
-			})
-		})
-	}
-
-})
+// ****** Event ******
+app.get('/event', event.get)
+app.post('/event', ensureAuthenticated, event.update)
+app.get('/event/create', ensureAuthenticated, event.create)
+app.get('/event/:id', event.get_id)
+app.post('/event/:id', ensureAuthenticated, event.post_id)
+app.post('/event/:id/guest', ensureAuthenticated, event.post_id_guest)
 
 
 app.listen(port, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
 
-
+function ensureAuthenticated(req, res, next) {
+	if ( auth.loggedIn ) { return next(); }
+	res.redirect('/login');
+}
 

@@ -1,54 +1,156 @@
-include partials/head
-div.yui3-g
-    div.yui3-u-1-24
-    div.yui3-u-11-12
-        div.title
-            h1.title=event.title
-    div.yui3-u-1-24
-div.yui3-g
-    div.yui3-u-1-24
-    div.yui3-u-1-3
-        div.event_left
-            div.column_left_content
-                div#description
-                    p=event.comment
-                div#host
-                    if (host && host.picture)
-                        img(src=host.picture)
-                    else
-                        img(src='/graphics/placeholder.jpg')
-                    p
-                        h3
-                            a(href='/user/' + host._id)=host.name
-                    p
-                        host.bio
-                div#pictures
-                    strong="Photos from " + host.name
+!!! 5
+html.js.flexbox.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqldatabase.indexeddb.hashchange.history.draganddrop.websockets.rgba.hsla.multiplebgs.backgroundsize.borderimage.borderradius.boxshadow.textshadow.opacity.cssanimations.csscolumns.cssgradients.cssreflections.csstransforms.csstransforms3d.csstransitions.fontface.generatedcontent.video.audio.localstorage.sessionstorage.webworkers.applicationcache.svg.inlinesvg.smil.svgclippaths(lang='en')
+head
+    meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    title
+    meta(name='description', content='')
+    meta(name='author', content='')
+    meta(name='viewport', content='width=device-width')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    style
+        body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+        }
+    link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/ga.js')
+    script(src='/javascripts/modernizr-2.5.3-respond-1.1.0.min.js')
+link(rel='stylesheet', type='text/css', href='data:text/css,')
+body
+    .navbar.navbar-fixed-top
+        .navbar-inner
+            .container
+                a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+                a.brand(href='/') Placemat
+                .nav-collapse
+                    ul.nav
+                        li
+                            a(href='/') Home
+                        li
+                            a(href='http://placemat.gosedesign.net/2/about.html') About
+                        li
+                            a(href='http://placemat.gosedesign.net/2/contact.html') Contact
+    .container
+        .alert.span7
+            button.close(data-dismiss='alert') x
+            p
+            strong
+                h3 Hi there!
+            | Thank you for choosing a seat at Bruno's table. He's excited to share his food with you. Something about how we aren't quite ready yet, but how about you take this nice
+            a(href='http://placemat.gosedesign.net/2/event1.html#') survey!
+            br
+            br
+            | Proin in ultricies velit. Ut vel enim leo. Donec eget facilisis nisi. Phasellus vel tellus ac ante facilisis viverra. In ipsum felis, suscipit sit amet cursus ut, tincidunt nec magna.
+            p
+            p
+                a.btn.btn-primary.btn(href='http://placemat.gosedesign.net/2/survey.html') Take the Survey »
+        .row
+            .span8
+                h2 #{event.title}
+                img(src='/graphics/770x550')
+            .span4
+                h2
+                    a(href='/user/' + event._creator._id) #{event._creator.name}
+                p
+                    a(href= '/event?city=' + event.city ) #{event.city}, #{event.state}
+                ul.thumbnails
+                    li.span3
+                        .thumbnail
+                            img(src='/graphics/260x260', alt='')
+                            .caption
+                                h4 Superchef Extraordinaire
+                                p
+                                    | #{event._creator.bio.substring(0,140)}
+                                    a(href='/user/' + event._creator._id) More →
+                                p
+                                    a.btn.btn-primary(href='/event/' + event._id) Join Table
+                                    a.btn(href='/user/' + event._creator._id) Contact Chef
+                        div
+                            h3
+                                - if(!event._guests) event._guests = []
+                                span.badge.badge-info #{event._guests.length}
+                                | attending
+                            p
+                                span.badge #{event.seats - event._guests.length}
+                                | seats left
+                            each guest in event._guests
+                                img.rightmargin(src=guest.picture)
+                            - for (var i=0; i < event.seats - event._guests.length; i++)
+                                img.rightmargin(src='/graphics/40x40')
+        .span12
+            .span8
+                h3 Details
+                p
+                    #{event.comment}
+                p
+                    | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ligula lectus, pretium sed pharetra quis, laoreet vitae ligula. Integer odio turpis, semper et viverra id, fringilla sed enim. Nullam eu ullamcorper justo. Nam massa dolor, rhoncus ut fermentum et, bibendum vel nisi. Nam et sodales lorem. Nunc non luctus dui. Nam pellentesque mollis ligula, vestibulum sodales lacus dignissim nec. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec porttitor sollicitudin sapien at viverra. Nunc vel nisl malesuada eros tempus consequat. Aliquam scelerisque eleifend urna, vel convallis mi sollicitudin et. Cras ullamcorper massa et massa bibendum pharetra luctus felis suscipit. Donec ultricies lobortis placerat. Donec cursus, dui sed accumsan sodales, nibh purus luctus erat, in hendrerit nulla diam a turpis. Curabitur consectetur faucibus velit, vel hendrerit nulla facilisis at.
+                p
+                    | Proin in ultricies velit. Ut vel enim leo. Donec eget facilisis nisi. Phasellus vel tellus ac ante facilisis viverra. In ipsum felis, suscipit sit amet cursus ut, tincidunt nec magna. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed ut tortor et purus pharetra auctor quis sit amet lorem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus laoreet, lectus at hendrerit porta, tellus tortor malesuada eros, et gravida nunc arcu ac lorem. Ut arcu nulla, ultrices id lobortis id, pretium sed massa.
+                p
+                    | Cras sem tellus, interdum a accumsan quis, semper non ante. Vivamus laoreet lectus in diam porttitor sagittis vel sit amet tortor. Cras a lectus ac nunc eleifend volutpat. Aenean nec fermentum enim. Integer ornare facilisis ligula ac eleifend. Maecenas a tincidunt leo. Nunc non ipsum vel metus porttitor pretium nec in mi. Aliquam hendrerit volutpat lorem eu aliquet. Nam non leo eget augue pharetra suscipit. Sed non odio eget quam placerat elementum.
+                p
+                    | Etiam nec sapien sit amet lectus consectetur euismod non non magna. Aenean magna mauris, lacinia eget gravida nec, sollicitudin at diam. Suspendisse urna augue, dignissim sed vestibulum at, iaculis eget erat. Suspendisse congue enim nec risus ultricies sit amet dignissim elit vestibulum. Donec tincidunt convallis sollicitudin. Praesent nec quam nisl. Suspendisse magna velit, auctor vel molestie ac, feugiat quis nunc. Donec sed libero at metus lacinia porttitor. In nec velit libero, ut consequat lectus. Nulla facilisi. Cras non nisl at orci commodo volutpat feugiat et nibh. Fusce rhoncus, ipsum non blandit gravida, nisl sem suscipit magna, sed fermentum erat ligula a nisl. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+                p
                     br
-                    span=host.city + ", " + host.zipcode
-    div.yui3-u-1-24
-    div.yui3-u-13-24
-        div.event_right
-            div.column_right_content
-                div.details
-                    div.item
-                        h3 When
-                        span=event.date
-                    div.item
-                        h3 Where
-                        span=host.city + " " + host.state
-                    div.item
-                        h3 Cost
-                        span= event.cost
-                    div.item
-                        h3 Available Seats
-                        span= event.seats - event.guests.length
-//- Three buttons: Join, Pending, Approved
-                    form(method="POST", action="/event/" + event._id)
-                        input.join.button(type='Submit', value='Join now')
-                            Join now
-                    each guest in event.guests
-                        p=guest.name
-    div.yui3-u-1-24
-div.spacer
-include partials/foot
+                    br
+                    br
+        hr
+        div
+            h3 Hey maybe you like this stuff?
+            hr
+            .span12
+                ul.thumbnails
+                    li.span2
+                        .thumbnail
+                            img(src='/graphics/260x260', alt='')
+                            .caption
+                                h4
+                                    a(href='http://placemat.gosedesign.net/2/event1.html#') Related One
+                        div
+                    li.span2
+                        .thumbnail
+                            img(src='/graphics/260x260', alt='')
+                            .caption
+                                h4
+                                    a(href='http://placemat.gosedesign.net/2/event1.html#') Related Two
+                        div
+                    li.span2
+                        .thumbnail
+                            img(src='/graphics/260x260', alt='')
+                            .caption
+                                h4
+                                    a(href='http://placemat.gosedesign.net/2/event1.html#') Related Three
+                        div
+                    li.span2
+                        .thumbnail
+                            img(src='/graphics/260x260', alt='')
+                            .caption
+                                h4
+                                    a(href='http://placemat.gosedesign.net/2/event1.html#') Related Four
+                        div
+                    li.span2
+                        .thumbnail
+                            img(src='/graphics/260x260', alt='')
+                            .caption
+                                h4
+                                    a(href='http://placemat.gosedesign.net/2/event1.html#') Related Five
+                        div
+        footer
+            p © Placemat 2012
+    script(src='/javascripts/jquery.min.js')
+    script
+        window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\\/script>')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='/javascripts/plugins.js')
+    script(src='/javascripts/script.js')
+    script
+        var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+        g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g,s)}(document,'script'));
