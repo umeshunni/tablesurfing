@@ -111,6 +111,10 @@ app.get('/', site.index )
 app.get('/home', site.home)
 app.get('/last', site.last)
 app.get('/login', site.login)
+app.get('/about', site.about)
+app.get('/contact', site.contact)
+
+
 
 
 // ****** User ******

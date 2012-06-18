@@ -25,3 +25,11 @@ exports.last = function(req, res){
 exports.login = function(req, res){
     res.render(__dirname + '/../views/signup.jade', {title: "Sign Up"});
 }
+
+exports.about = function(req, res){
+    res.render(__dirname + '/../views/about.jade', {title: "About"});
+}
+
+exports.contact = function(req, res){
+    res.render(__dirname + '/../views/contact.jade', {title: "Contact"});
+}

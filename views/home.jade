@@ -14,8 +14,8 @@ html.js.flexbox.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqld
             padding-top: 60px;
             padding-bottom: 40px;
             }
-        link(rel='stylesheet', href='http://placemat.gosedesign.net/2/css/bootstrap-responsive.min.css')
-        link(rel='stylesheet', href='http://placemat.gosedesign.net/2/css/style.css')
+        link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.min.css')
+        link(rel='stylesheet', href='/stylesheets/style.css')
         script(src='/javascripts/ga.js')
         script(src='/javascripts/modernizr-2.5.3-respond-1.1.0.min.js')
     link(rel='stylesheet', type='text/css', href='data:text/css,')
@@ -33,9 +33,9 @@ html.js.flexbox.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqld
                         li.active
                             a(href='/') Home
                         li
-                            a(href='http://placemat.gosedesign.net/2/about.html') About
+                            a(href='/about') About
                         li
-                            a(href='http://placemat.gosedesign.net/2/contact.html') Contact
+                            a(href='/contact') Contact
     .container
         //
              Main hero unit for a primary marketing message or call to action 
@@ -44,7 +44,7 @@ html.js.flexbox.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqld
             p
                 | Little blurb about what we do here. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
             p
-                a.btn.btn-primary.btn-large(href='http://placemat.gosedesign.net/2/about.html') Learn more »
+                a.btn.btn-primary.btn-large(href='/about') Learn more »
         hr
         #myCarousel.carousel.slide
             //
@@ -62,9 +62,9 @@ html.js.flexbox.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqld
                                 img(src='/graphics/770x550')
                             .span4
                                 h2
-                                    a(href='http://placemat.gosedesign.net/2/event1.html') #{(event._creator) ? event._creator.name : "duhduh"}
+                                    a(href='/user/' + event._creator._id) #{(event._creator) ? event._creator.name : "Nameless"}
                                 p
-                                    a(href='http://placemat.gosedesign.net/2/event1.html') #{event.city}, #{event.state}
+                                    a(href='/event?city=' + event.city) #{event.city}, #{event.state}
                                 ul.thumbnails
                                     li.span3
                                         .thumbnail
@@ -73,7 +73,7 @@ html.js.flexbox.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqld
                                                 h4 #{event._creator.name}
                                                 p
                                                     #{event._creator.bio.substring(0,140)}
-                                                    a(href='/user/' + event._creator) More →
+                                                    a(href='/user/' + event._creator._id) More →
                                                 p
                                                     a.btn.btn-primary(href='/event/' + event._id) Join Table
                                                     a.btn(href='/user/' + event._creator._id) Contact Chef
@@ -92,8 +92,8 @@ html.js.flexbox.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqld
 
             //
                  Carousel nav 
-            a.carousel-control.left(href='http://placemat.gosedesign.net/2/index.html#myCarousel', data-slide='prev') ‹
-            a.carousel-control.right(href='http://placemat.gosedesign.net/2/index.html#myCarousel', data-slide='next') ›
+            a.carousel-control.left(href='#myCarousel', data-slide='prev') ‹
+            a.carousel-control.right(href='#myCarousel', data-slide='next') ›
         hr
         .row
             h1.span12 Browse dinners
@@ -114,7 +114,7 @@ html.js.flexbox.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqld
             .span4
                 img(src='/graphics/370x260')
                 h2
-                    a(href='http://placemat.gosedesign.net/2/survey.html') Take a survey!
+                    a(href='http://www.surveymonkey.com/s/NBSBWKN') Take a survey!
                 p
                     | Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
                 //
@@ -130,7 +130,7 @@ html.js.flexbox.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqld
             h1 Help us out
             p Take a survey to blah blah.
             p
-                a.btn.btn-primary.btn-large(href='http://placemat.gosedesign.net/2/survey.html') Take the survey »
+                a.btn.btn-primary.btn-large(href='http://www.surveymonkey.com/s/NBSBWKN') Take the survey »
         hr
         footer
             p © Placemat 2012

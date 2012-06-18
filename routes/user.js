@@ -8,7 +8,7 @@ exports.get = function (req, res) {
     if(auth && auth.loggedIn){
         User.findOne({facebook: auth.facebook.user.id}, function(err, person){
             if(err) res.send(err, 400)
-            res.render(__dirname + '/views/user.jade', {title: "User Profile", person: person, edit: "true"});
+            res.render(__dirname + '/../views/user.jade', {title: "User Profile", person: person, edit: "true"});
         })
     }
     else{
@@ -37,6 +37,6 @@ exports.view = function (req, res) {
     // If logged in, profile
     User.findOne({_id: id}, function(err, result){
         if(err) res.send(err, 400)
-        res.render(__dirname + '/views/user.jade', {title: "User Profile", person: result, edit:"false"});
+        res.render(__dirname + '/../views/user.jade', {title: "User Profile", person: result, edit:"false"});
     })
 }
