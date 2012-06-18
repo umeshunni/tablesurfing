@@ -54,12 +54,8 @@ exports.get_id = function (req, res) {
     // If logged in, profile
     Event.findOne({_id: id}).populate('_creator').populate('_guests').exec(function(err, event){
         if(event){
-            var creator = event.creator
-            User.findOne({_id: creator}, function(err, host){
-                if(err) res.send(err, 400)
-                User.findOne({'facebook': facebookid}, function(err, person){
-                    res.render(__dirname + '/../views/event.jade', {title: "Event Info", event: event, host: host, person: person});
-                })
+            User.findOne({'facebook': facebookid}, function(err, person){
+                res.render(__dirname + '/../views/event.jade', {title: "Event Info", event: event, person: person});
             })
         }
         else
@@ -67,24 +63,21 @@ exports.get_id = function (req, res) {
     })
 }
 
-// ****** Add a guest to an event ******
-exports.post_id = function (req, res) {
-    var auth = req.session.auth
-    if(auth && auth.loggedIn) 
+// ****** Join an event ******
+exports.join = function (req, res) {
     // Assume agreed to requirements
     var id = req.params.id;
     // If logged in, profile
-    Event.findOne({_id: id}, function(err, event){
+    Event.findOne({_id: id}).populate('_creator').exec(function(err, event){
         if(err) res.send(err, 400)
         User.findOne({facebook: req.session.auth.facebook.user.id}, function(err, person){
             if(err) res.send(err, 400)
-            event.guests.push({_id: person._id, name: person.name, approval: 'pending'})
+            if(event._guests.indexOf(person._id) == -1)
+                event._guests.push({_id: person._id, name: person.name, approval: 'pending'})
             event.save()
             // Notify the host through their method
-            User.findOne({_id: event.creator}, function(err, host){
-                if(host.notify.indexOf("sms") != -1)
-                    twilio.sendText(host.phone, person.name + " has asked to join your event " + event.title)
-            })
+            // if(event._creator.notify.indexOf("sms") != -1)
+            //     twilio.sendText(host.phone, person.name + " has asked to join your event " + event.title)
             res.redirect('/event/' + id)
             //res.render(__dirname + '/views/event.jade', {title: "Add Event", event: event, person: person});
         })
@@ -95,21 +88,19 @@ exports.post_id = function (req, res) {
 exports.post_id_guest = function(req, res){
     // Updates the guest object
     var body = req.body
-    if(req.session.auth && auth.loggedIn){
-        User.find({_id:req.session.id}, function(err, host){ // Get the host
-            if(err) res.send(err, 400)
-            Event.find({_id:req.params.id}, function(err, event){
-                if(err)res.send(err, 400)
-                if(event.creator != host._id) res.send("Unauthorized", 401)
-                
-                event.guests = body
-                // This may not be necessary
-                // event.save(function(err){
-                //     if(err) res.send(err, 400)
-                // });
-                res.render(__dirname + '/../views/event.jade', {title: "Guests", event: event, person: host});
-            })
+    User.find({_id:req.session.id}, function(err, host){ // Get the host
+        if(err) res.send(err, 400)
+        Event.find({_id:req.params.id}, function(err, event){
+            if(err)res.send(err, 400)
+            if(event.creator != host._id) res.send("Unauthorized", 401)
+            
+            event.guests = body
+            // This may not be necessary
+            // event.save(function(err){
+            //     if(err) res.send(err, 400)
+            // });
+            res.render(__dirname + '/../views/event.jade', {title: "Guests", event: event, person: host});
         })
-    }
+    })
 
 }

@@ -62,14 +62,22 @@ body
                 ul.thumbnails
                     li.span3
                         .thumbnail
-                            img(src='/graphics/260x260', alt='')
+                            if(event._creator.picture)
+                                img(src=event._creator.picture, width='260px', height='260px', alt='')
+                            else
+                                img(src='/graphics/260x260', alt='')
                             .caption
                                 h4 Superchef Extraordinaire
                                 p
                                     | #{event._creator.bio.substring(0,140)}
                                     a(href='/user/' + event._creator._id) More →
                                 p
-                                    a.btn.btn-primary(href='/event/' + event._id) Join Table
+                                    - if (!person)
+                                        a.btn.btn-primary(href='/event/' + event._id + '/join') Login and Join Table
+                                    - else if (person && event._guests.indexOf(person.toString()) != -1)
+                                        a.btn.btn-primary(href='/event/' + event._id) Joined
+                                    - else
+                                        a.btn.btn-primary(href='/event/' + event._id + '/join') Join Table
                                     a.btn(href='/user/' + event._creator._id) Contact Chef
                         div
                             h3

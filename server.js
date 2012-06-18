@@ -123,7 +123,7 @@ app.get('/event', event.get)
 app.post('/event', ensureAuthenticated, event.update)
 app.get('/event/create', ensureAuthenticated, event.create)
 app.get('/event/:id', event.get_id)
-app.post('/event/:id', ensureAuthenticated, event.post_id)
+app.get('/event/:id/join', ensureAuthenticated, event.join)
 app.post('/event/:id/guest', ensureAuthenticated, event.post_id_guest)
 
 
@@ -132,7 +132,9 @@ app.listen(port, function(){
 });
 
 function ensureAuthenticated(req, res, next) {
-	if ( auth.loggedIn ) { return next(); }
+    var auth = req.session.auth
+    req.session.return_path = req.url
+    if ( auth && auth.loggedIn ) { return next(); }
 	res.redirect('/login');
 }
 
