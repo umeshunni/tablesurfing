@@ -1,6 +1,57 @@
-!!!
-html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body!= body
+!!! 5
+html.js.flexbox.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqldatabase.indexeddb.hashchange.history.draganddrop.websockets.rgba.hsla.multiplebgs.backgroundsize.borderimage.borderradius.boxshadow.textshadow.opacity.cssanimations.csscolumns.cssgradients.cssreflections.csstransforms.csstransforms3d.csstransitions.fontface.generatedcontent.video.audio.localstorage.sessionstorage.webworkers.applicationcache.svg.inlinesvg.smil.svgclippaths(lang='en')
+    head
+        meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
+        meta(charset='utf-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+        title
+        meta(name='description', content='')
+        meta(name='author', content='')
+        meta(name='viewport', content='width=device-width')
+        link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+        style
+            body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+            }
+        link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.min.css')
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        block scripts
+            script(src='/javascripts/ga.js')
+            script(src='/javascripts/modernizr-2.5.3-respond-1.1.0.min.js')
+    link(rel='stylesheet', type='text/css', href='data:text/css,')
+    body
+        .navbar.navbar-fixed-top
+            .navbar-inner
+                .container
+                    a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+                        span.icon-bar
+                        span.icon-bar
+                        span.icon-bar
+                    a.brand(href='/') Placemat
+                    .nav-collapse
+                        - var items = { home : 'Home', about: 'About', contact: 'Contact' }
+                        ul.nav
+                            - for item, path in items
+                                li(class= (item == title) ? 'active' : '')
+                                    a(href= "/" + path)= item
+        .container
+            block content
+            footer
+                p © Placemat 2012
+        script(src='/javascripts/jquery.min.js')
+        script
+            window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\\/script>')
+        script(src='/javascripts/bootstrap.min.js')
+        script(src='/javascripts/plugins.js')
+        script(src='/javascripts/script.js')
+        script
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        script(src='/javascripts/bootstrap-carousel.js')
+        script
+            $('.carousel').carousel({
+            interval: 3500
+            })

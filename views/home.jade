@@ -1,154 +1,89 @@
-!!! 5
-html.js.flexbox.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqldatabase.indexeddb.hashchange.history.draganddrop.websockets.rgba.hsla.multiplebgs.backgroundsize.borderimage.borderradius.boxshadow.textshadow.opacity.cssanimations.csscolumns.cssgradients.cssreflections.csstransforms.csstransforms3d.csstransitions.fontface.generatedcontent.video.audio.localstorage.sessionstorage.webworkers.applicationcache.svg.inlinesvg.smil.svgclippaths(lang='en')
-    head
-        meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
-        meta(charset='utf-8')
-        meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
-        title
-        meta(name='description', content='')
-        meta(name='author', content='')
-        meta(name='viewport', content='width=device-width')
-        link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
-        style
-            body {
-            padding-top: 60px;
-            padding-bottom: 40px;
-            }
-        link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.min.css')
-        link(rel='stylesheet', href='/stylesheets/style.css')
-        script(src='/javascripts/ga.js')
-        script(src='/javascripts/modernizr-2.5.3-respond-1.1.0.min.js')
-    link(rel='stylesheet', type='text/css', href='data:text/css,')
-    body
-    .navbar.navbar-fixed-top
-        .navbar-inner
-            .container
-                a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
-                    span.icon-bar
-                    span.icon-bar
-                    span.icon-bar
-                a.brand(href='/') Placemat
-                .nav-collapse
-                    ul.nav
-                        li.active
-                            a(href='/') Home
-                        li
-                            a(href='/about') About
-                        li
-                            a(href='/contact') Contact
-    .container
-        //
-             Main hero unit for a primary marketing message or call to action 
-        .hero-unit
-            h1 Placemat
-            p
-                | Little blurb about what we do here. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-            p
-                a.btn.btn-primary.btn-large(href='/about') Learn more »
-        hr
-        #myCarousel.carousel.slide
-            //
-                 Carousel items 
-            .carousel-inner
-                each event, index in events
-                    - if (event._creator==undefined) event._creator = {}
-                    div(class= 'item ' + (index == 0) ? 'active' : '')
-                        //
-                             Feature component 
-                        .row
-                            .span8
-                                h2
-                                    a(href='/event/' + event._id) #{event.title}
-                                img(src='/graphics/770x550')
-                            .span4
-                                h2
-                                    a(href='/user/' + event._creator._id) #{(event._creator) ? event._creator.name : "Nameless"}
-                                p
-                                    a(href='/event?city=' + event.city) #{event.city}, #{event.state}
-                                ul.thumbnails
-                                    li.span3
-                                        .thumbnail
-                                            img(src='/graphics/260x260', alt='')
-                                            .caption
-                                                h4 #{event._creator.name}
-                                                p
-                                                    #{event._creator.bio.substring(0,140)}
-                                                    a(href='/user/' + event._creator._id) More →
-                                                p
-                                                    a.btn.btn-primary(href='/event/' + event._id) Join Table
-                                                    a.btn(href='/user/' + event._creator._id) Contact Chef
-                                        div
-                                            h3
-                                                - if(!event._guests) event._guests = []
-                                                span.badge.badge-info #{event._guests.length}
-                                                | attending
-                                            p
-                                                span.badge #{event.seats - event._guests.length}
-                                                | seats left
-                                            each guest in event._guests
-                                                img.rightmargin(src=guest.picture)
-                                            - for (var i=0; i < event.seats - event._guests.length; i++)
-                                                img.rightmargin(src='/graphics/40x40')
+extends layout
+block prepend content
 
-            //
-                 Carousel nav 
-            a.carousel-control.left(href='#myCarousel', data-slide='prev') ‹
-            a.carousel-control.right(href='#myCarousel', data-slide='next') ›
-        hr
-        .row
-            h1.span12 Browse dinners
-            .span4
-                img(src='/graphics/370x260')
-                h2 Super neat
-                p
-                    | Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-                //
-                     <p><a class="btn" href="#">View details &raquo;</a></p> 
-            .span4
-                img(src='/graphics/370x260')
-                h2 Really fun
-                p
-                    | Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-                //
-                     <p><a class="btn" href="#">View details &raquo;</a></p> 
-            .span4
-                img(src='/graphics/370x260')
-                h2
-                    a(href='http://www.surveymonkey.com/s/NBSBWKN') Take a survey!
-                p
-                    | Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
-                //
-                        <p><a class="btn" href="#">View details &raquo;</a></p> 
-        hr
-        .hero-unit
-            h1 Want to Host A Meal?
-            p All you have to do is sign up blah blah. It's easy.
-            p
-                a.btn.btn-primary.btn-large Get started »
-        hr
-        .hero-unit
-            h1 Help us out
-            p Take a survey to blah blah.
-            p
-                a.btn.btn-primary.btn-large(href='http://www.surveymonkey.com/s/NBSBWKN') Take the survey »
-        hr
-        footer
-            p © Placemat 2012
     //
-         /container 
-    script(src='/javascripts/jquery.min.js')
-    script
-        window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\\/script>')
-    script(src='/javascripts/bootstrap.min.js')
-    script(src='/javascripts/plugins.js')
-    script(src='/javascripts/script.js')
-    script
-        var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-        g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-        s.parentNode.insertBefore(g,s)}(document,'script'));
-    script(src='/javascripts/bootstrap-carousel.js')
-    script
-        $('.carousel').carousel({
-        interval: 3500
-        })
+         Main hero unit for a primary marketing message or call to action 
+    .hero-unit
+        h1 Placemat
+        p
+            | Little blurb about what we do here. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        p
+            a.btn.btn-primary.btn-large(href='/about') Learn more »
+    hr
+    #myCarousel.carousel.slide
+        //
+             Carousel items 
+        .carousel-inner
+            each event, index in events
+                - if (event._creator==undefined) event._creator = {}
+                div(class= 'item ' + (index == 0) ? 'active' : '')
+                    //
+                         Feature component 
+                    .row
+                        .span8
+                            h2
+                                a(href='/event/' + event._id) #{event.title}
+                            img(src='/graphics/770x550')
+                        .span4
+                            h2
+                                a(href='/user/' + event._creator._id) #{(event._creator) ? event._creator.name : "Nameless"}
+                            p
+                                a(href='/event?city=' + event.city) #{event.city}, #{event.state}
+                            ul.thumbnails
+                                li.span3
+                                    .thumbnail
+                                        img(src='/graphics/260x260', alt='')
+                                        .caption
+                                            h4 #{event._creator.name}
+                                            p
+                                                #{event._creator.bio.substring(0,140)}
+                                                a(href='/user/' + event._creator._id) More →
+                                            p
+                                                a.btn.btn-primary(href='/event/' + event._id) Join Table
+                                                a.btn(href='/user/' + event._creator._id) Contact Chef
+                                    div
+                                        h3
+                                            - if(!event._guests) event._guests = []
+                                            span.badge.badge-info #{event._guests.length}
+                                            | attending
+                                        p
+                                            span.badge #{event.seats - event._guests.length}
+                                            | seats left
+                                        each guest in event._guests
+                                            img.rightmargin(src=guest.picture)
+                                        - for (var i=0; i < event.seats - event._guests.length; i++)
+                                            img.rightmargin(src='/graphics/40x40')
+        a.carousel-control.left(href='#myCarousel', data-slide='prev') ‹
+        a.carousel-control.right(href='#myCarousel', data-slide='next') ›
+    hr
+    .row
+        h1.span12 Browse dinners
+        .span4
+            img(src='/graphics/370x260')
+            h2 Super neat
+            p
+                | Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+        .span4
+            img(src='/graphics/370x260')
+            h2 Really fun
+            p
+                | Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+        .span4
+            img(src='/graphics/370x260')
+            h2
+                a(href='http://www.surveymonkey.com/s/NBSBWKN') Take a survey!
+            p
+                | Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+    hr
+    .hero-unit
+        h1 Want to Host A Meal?
+        p All you have to do is sign up blah blah. It's easy.
+        p
+            a.btn.btn-primary.btn-large Get started »
+    hr
+    .hero-unit
+        h1 Help us out
+        p Take a survey to blah blah.
+        p
+            a.btn.btn-primary.btn-large(href='http://www.surveymonkey.com/s/NBSBWKN') Take the survey »
+    hr
