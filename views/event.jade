@@ -21,7 +21,7 @@ block prepend content
                     img(src="#{event.picture}")
                 else
                     img(src='/graphics/770x550')
-                if(account && event._creator._id == account._id)
+                if(user && event._creator._id == user._id)
                     h3 Choose a different picture
                     input(type="file", name="picture")
                     input(type='Submit', value='Save')
@@ -44,9 +44,9 @@ block prepend content
                                     | #{event._creator.bio.substring(0,140)}
                                     a(href='/user/' + event._creator._id) More →
                                 p
-                                    - if (!account)
+                                    - if (!user)
                                         a.btn.btn-primary(href='/event/' + event._id + '/join') Login and Join Table
-                                    - else if (account && event._guests.indexOf(account.toString()) != -1)
+                                    - else if (user && event._guests.indexOf(user.toString()) != -1)
                                         a.btn.btn-primary(href='/event/' + event._id) Joined
                                     - else
                                         a.btn.btn-primary(href='/event/' + event._id + '/join') Join Table
@@ -66,6 +66,10 @@ block prepend content
         .span12
             .span8
                 h3 Details
+                p
+                    #{event.date} #{event.time}
+                p
+                    #{event.city}, #{event.state}
                 p
                     #{event.comment}
                 p

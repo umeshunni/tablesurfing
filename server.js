@@ -20,6 +20,12 @@ require('./models.js');
 var User = mongoose.model("User", User);
 var Event = mongoose.model("Event", Event);
 
+everyauth.everymodule.userPkey('_id');
+everyauth.everymodule
+    .findUserById( function (id, callback) {
+        User.findById(id, callback)
+    });
+
 // tablesurfing.org domain
 // .appId('217422248376051')
 // .appSecret('b9723de2871ddcd41b07ffe5a97e7f6a')
@@ -35,7 +41,7 @@ everyauth.facebook
 	var id = fbUserMetadata.id;
 	var promise = this.Promise();
 	User.findOne({ facebook: id}, function(err, result) {
-		var user;
+        var user;
 		if(!result) {
 			user = new User();
 			user.facebook = id;
@@ -51,6 +57,8 @@ everyauth.facebook
 	return promise;
 })
 .redirectPath('/last');
+
+
 
 var app = module.exports = express.createServer();
 
@@ -141,10 +149,7 @@ function ensureAuthenticated(req, res, next) {
     var auth = req.session.auth
     req.session.return_path = req.url
     if ( auth && auth.loggedIn ) { 
-        User.findOne({"facebook": auth.facebook.user.id}, function(err, account){
-            req.session.account = account
-            return next(); 
-        })
+        return next(); 
     }
     else{
         res.redirect('/login');

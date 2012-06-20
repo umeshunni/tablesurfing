@@ -9,13 +9,7 @@ var User = mongoose.model("User", User);
 exports.get = function (req, res) {
     var auth = req.session.auth
     // If logged in, profile
-    if(auth && auth.loggedIn){
-        var person = req.session.account
-        res.render(__dirname + '/../views/user.jade', {title: "Profile", person: person, edit: "true"});
-    }
-    else{
-        res.render(__dirname + '/views/signup.jade', {title: "Sign Up"});
-    }   
+    res.render(__dirname + '/../views/user.jade', {title: "Profile", user: req.user, edit: "true"});
 }
 
 // ****** User Update ******
@@ -25,7 +19,7 @@ exports.update = function(req, res){
     var auth = req.session.auth
     var id = ""
     if (auth && auth.facebook.user)
-        var id = req.session.account._id
+        var id = req.user._id
     req.body.phone = twilio.phoneUS(req.body.phone)
     if(!req.body.notify) req.body.notify = []
         

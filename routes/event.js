@@ -9,7 +9,7 @@ var User = mongoose.model("User", User);
 // ****** New Event Form ******
 exports.get = function(req, res){
     
-    User.findOne({_id:req.session.account._id}, function (err, host){
+    User.findOne({_id:req.user._id}, function (err, host){
         if(err) res.send(err, 400)
         res.render(__dirname + '/../views/eventcreate.jade', {title: "Create Event", host: host});
     })
@@ -57,7 +57,7 @@ exports.get_id = function (req, res) {
     // If logged in, profile
     Event.findOne({_id: id}).populate('_creator').populate('_guests').exec(function(err, event){
         if(err) res.send(err, 400)
-        res.render(__dirname + '/../views/event.jade', {title: "Event Info", event: event, account: req.session.account});
+        res.render(__dirname + '/../views/event.jade', {title: "Event Info", event: event, user: req.user});
     })
 }
 
@@ -95,16 +95,15 @@ exports.join = function (req, res) {
     // If logged in, profile
     Event.findOne({_id: id}).populate('_creator').exec(function(err, event){
         if(err) res.send(err, 400)
-        var account = req.session.account
         if(err) res.send(err, 400)
-        if(event._guests.indexOf(account._id) == -1)
-            event._guests.push({_id: account._id, name: account.name, approval: 'pending'})
+        if(event._guests.indexOf(req.user._id) == -1)
+            event._guests.push({_id: req.user._id, name: req.user.name, approval: 'pending'})
         event.save()
         // Notify the host through their method
         // if(event._creator.notify.indexOf("sms") != -1)
-        //     twilio.sendText(event._creator.phone, account.name + " has asked to join your event " + event.title)
+        //     twilio.sendText(event._creator.phone, req.user.name + " has asked to join your event " + event.title)
         res.redirect('/event/' + id)
-        //res.render(__dirname + '/views/event.jade', {title: "Add Event", event: event, account: account});
+        //res.render(__dirname + '/views/event.jade', {title: "Add Event", event: event, user: req.user});
     })
 }
 
@@ -119,11 +118,12 @@ exports.post_id_guest = function(req, res){
             if(event.creator != host._id) res.send("Unauthorized", 401)
             
             event.guests = body
+            event.save()
             // This may not be necessary
             // event.save(function(err){
             //     if(err) res.send(err, 400)
             // });
-            res.render(__dirname + '/../views/event.jade', {title: "Guests", event: event, person: host});
+            res.render(__dirname + '/../views/event.jade', {title: "Guests", event: event, user: req.user});
         })
     })
 
