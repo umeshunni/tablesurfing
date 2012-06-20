@@ -1,65 +1,41 @@
-include partials/head
-div.yui3-g
-    div.yui3-u-1-24
-    div.yui3-u-11-12
-        div.title
-            h1.title=title
-    div.yui3-u-1-24
-form(method="POST", action="/event")
-    input(type="hidden", value=host._id, name="creator")
-    input(type="hidden", value=host.city, name="city")
-    input(type="hidden", value=host.state, name="state")
-    div.yui3-g
-        div.yui3-u-7-12
-            div.event_left
-                div.column_left_content
-                    div.item#description
-                        h3 Title
-                        p What type of meal are you serving?
-                        input(type="text", value="", name="title", placeholder="Om nom nom")
-                    div.item
-                        h3 Description
-                        p Tell us about your meal.  Be sure to include information such as vegetarian/vegan friendly, allergy awareness, etc.
-                        textarea(value="", name="comment", rows="3", placeholder="What makes this special")
-                    div.item#host
-                        h3 Host
-                        if host.picture
-                            img(src=host.picture)
-                        else
-                            img(src='/graphics/placeholder.jpg')
-                        p
-                            h3=host.name
-                        p
-                            host.bio
-                    div#pictures
-                        strong="Photos from " + host.name
-        div.yui3-u-1-24
-        div.yui3-u-3-8
-            div.event_right
-                div.column_right_content
-                    div.details
-                        p
-                            h3 When
-                            p Date
-                                input(type="text", value="", name="date", placeholder="Month Day")
-                            p Time
-                                input(type="text", value="", name="time", placeholder="Time AM")
-                            
-                        p
-                            h3 Where
-                            span=host.city + " " + host.state
-                        p
-                            h3 Cost
-                            p What do you want in return? (dollar amount, side dish, big smile)
-                                input(type="text", value="", name="cost", placeholder="Compensation")
-                        p
-                            h3 Table Size
-                            p How many spaces are free?
-                                input(type="number", value="1", name="seats", min="1", max="10", placeholder="#")
-                        p
-                            input(type='Submit', value='Create')
-                                Create Now
-                            
-                    
-div.spacer
-include partials/foot
+extends layout
+block prepend content
+    div.title
+        h1.title=title
+    form(method="POST", action="/event", enctype="multipart/form-data")
+        input(type="hidden", value=host._id, name="_creator")
+        input(type="hidden", value=host.city, name="city")
+        input(type="hidden", value=host.state, name="state")
+        div.item#description
+            h3 Title
+            p What type of meal are you serving?
+            input(type="text", value="", name="title", placeholder="Om nom nom")
+        div.item
+            h3 Description
+            p Tell us about your meal.  Be sure to include information such as vegetarian/vegan friendly, allergy awareness, etc.
+            textarea(value="", name="comment", rows="3", placeholder="What makes this special")
+        div.picture
+            h3 Upload a picture
+            input(type="file", name="picture")
+        div.details
+            p
+                h3 When
+                p Date
+                    input(type="text", value="", name="date", placeholder="Month Day")
+                p Time
+                    input(type="text", value="", name="time", placeholder="Time AM")
+                
+            p
+                h3 Where
+                span=host.city + " " + host.state
+            p
+                h3 Cost
+                p What do you want in return? (dollar amount, side dish, big smile)
+                    input(type="text", value="", name="cost", placeholder="Compensation")
+            p
+                h3 Table Size
+                p How many spaces are free?
+                    input(type="number", value="1", name="seats", min="1", max="10", placeholder="#")
+            p
+                input(type='Submit', value='Create')
+                    Create Now

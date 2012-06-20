@@ -7,6 +7,7 @@ var User = new Schema({
   , facebook        : String
   , created         : {type: String, default: Date.now}
   , name            : {type: String}
+  , tagline         : {type: String}
   , email           : {type: String}
   , phone           : {type: String}
   , address         : {type: String}
@@ -36,6 +37,7 @@ var Event = new Schema({
   , cost       : String
   , _guests    : [{ type: Schema.ObjectId, ref: 'User' }]
   , photos: [{type : String}]
+  , picture: String
 });
 
 

@@ -14,63 +14,72 @@ block prepend content
         p
             a.btn.btn-primary.btn(href='http://www.surveymonkey.com/s/NBSBWKN') Take the Survey »
     .row
-        .span8
-            h2 #{event.title}
-            img(src='/graphics/770x550')
-        .span4
-            h2
-                a(href='/user/' + event._creator._id) #{event._creator.name}
-            p
-                a(href= '/event?city=' + event.city ) #{event.city}, #{event.state}
-            ul.thumbnails
-                li.span3
-                    .thumbnail
-                        if(event._creator.picture)
-                            img(src=event._creator.picture, width='260px', height='260px', alt='')
-                        else
-                            img(src='/graphics/260x260', alt='')
-                        .caption
-                            h4 Superchef Extraordinaire
+        form(method="POST", enctype="multipart/form-data")
+            .span8
+                h2 #{event.title}
+                if(event.picture)
+                    img(src="#{event.picture}")
+                else
+                    img(src='/graphics/770x550')
+                if(account && event._creator._id == account._id)
+                    h3 Choose a different picture
+                    input(type="file", name="picture")
+                    input(type='Submit', value='Save')
+                        Save
+            .span4
+                h2
+                    a(href='/user/' + event._creator._id) #{event._creator.name}
+                p
+                    a(href= '/event?city=' + event.city ) #{event.city}, #{event.state}
+                ul.thumbnails
+                    li.span3
+                        .thumbnail
+                            if(event._creator.picture)
+                                img(src=event._creator.picture, width='260px', height='260px', alt='')
+                            else
+                                img(src='/graphics/260x260', alt='')
+                            .caption
+                                h4 Superchef Extraordinaire
+                                p
+                                    | #{event._creator.bio.substring(0,140)}
+                                    a(href='/user/' + event._creator._id) More →
+                                p
+                                    - if (!account)
+                                        a.btn.btn-primary(href='/event/' + event._id + '/join') Login and Join Table
+                                    - else if (account && event._guests.indexOf(account.toString()) != -1)
+                                        a.btn.btn-primary(href='/event/' + event._id) Joined
+                                    - else
+                                        a.btn.btn-primary(href='/event/' + event._id + '/join') Join Table
+                                    a.btn(href='/user/' + event._creator._id) Contact Chef
+                        div
+                            h3
+                                - if(!event._guests) event._guests = []
+                                span.badge.badge-info #{event._guests.length}
+                                | attending
                             p
-                                | #{event._creator.bio.substring(0,140)}
-                                a(href='/user/' + event._creator._id) More →
-                            p
-                                - if (!person)
-                                    a.btn.btn-primary(href='/event/' + event._id + '/join') Login and Join Table
-                                - else if (person && event._guests.indexOf(person.toString()) != -1)
-                                    a.btn.btn-primary(href='/event/' + event._id) Joined
-                                - else
-                                    a.btn.btn-primary(href='/event/' + event._id + '/join') Join Table
-                                a.btn(href='/user/' + event._creator._id) Contact Chef
-                    div
-                        h3
-                            - if(!event._guests) event._guests = []
-                            span.badge.badge-info #{event._guests.length}
-                            | attending
-                        p
-                            span.badge #{event.seats - event._guests.length}
-                            | seats left
-                        each guest in event._guests
-                            img.rightmargin(src=guest.picture)
-                        - for (var i=0; i < event.seats - event._guests.length; i++)
-                            img.rightmargin(src='/graphics/40x40')
-    .span12
-        .span8
-            h3 Details
-            p
-                #{event.comment}
-            p
-                | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ligula lectus, pretium sed pharetra quis, laoreet vitae ligula. Integer odio turpis, semper et viverra id, fringilla sed enim. Nullam eu ullamcorper justo. Nam massa dolor, rhoncus ut fermentum et, bibendum vel nisi. Nam et sodales lorem. Nunc non luctus dui. Nam pellentesque mollis ligula, vestibulum sodales lacus dignissim nec. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec porttitor sollicitudin sapien at viverra. Nunc vel nisl malesuada eros tempus consequat. Aliquam scelerisque eleifend urna, vel convallis mi sollicitudin et. Cras ullamcorper massa et massa bibendum pharetra luctus felis suscipit. Donec ultricies lobortis placerat. Donec cursus, dui sed accumsan sodales, nibh purus luctus erat, in hendrerit nulla diam a turpis. Curabitur consectetur faucibus velit, vel hendrerit nulla facilisis at.
-            p
-                | Proin in ultricies velit. Ut vel enim leo. Donec eget facilisis nisi. Phasellus vel tellus ac ante facilisis viverra. In ipsum felis, suscipit sit amet cursus ut, tincidunt nec magna. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed ut tortor et purus pharetra auctor quis sit amet lorem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus laoreet, lectus at hendrerit porta, tellus tortor malesuada eros, et gravida nunc arcu ac lorem. Ut arcu nulla, ultrices id lobortis id, pretium sed massa.
-            p
-                | Cras sem tellus, interdum a accumsan quis, semper non ante. Vivamus laoreet lectus in diam porttitor sagittis vel sit amet tortor. Cras a lectus ac nunc eleifend volutpat. Aenean nec fermentum enim. Integer ornare facilisis ligula ac eleifend. Maecenas a tincidunt leo. Nunc non ipsum vel metus porttitor pretium nec in mi. Aliquam hendrerit volutpat lorem eu aliquet. Nam non leo eget augue pharetra suscipit. Sed non odio eget quam placerat elementum.
-            p
-                | Etiam nec sapien sit amet lectus consectetur euismod non non magna. Aenean magna mauris, lacinia eget gravida nec, sollicitudin at diam. Suspendisse urna augue, dignissim sed vestibulum at, iaculis eget erat. Suspendisse congue enim nec risus ultricies sit amet dignissim elit vestibulum. Donec tincidunt convallis sollicitudin. Praesent nec quam nisl. Suspendisse magna velit, auctor vel molestie ac, feugiat quis nunc. Donec sed libero at metus lacinia porttitor. In nec velit libero, ut consequat lectus. Nulla facilisi. Cras non nisl at orci commodo volutpat feugiat et nibh. Fusce rhoncus, ipsum non blandit gravida, nisl sem suscipit magna, sed fermentum erat ligula a nisl. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-            p
-                br
-                br
-                br
+                                span.badge #{event.seats - event._guests.length}
+                                | seats left
+                            each guest in event._guests
+                                img.rightmargin(width="40", height="40", src=guest.picture)
+                            - for (var i=0; i < event.seats - event._guests.length; i++)
+                                img.rightmargin(src='/graphics/40x40')
+        .span12
+            .span8
+                h3 Details
+                p
+                    #{event.comment}
+                p
+                    | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ligula lectus, pretium sed pharetra quis, laoreet vitae ligula. Integer odio turpis, semper et viverra id, fringilla sed enim. Nullam eu ullamcorper justo. Nam massa dolor, rhoncus ut fermentum et, bibendum vel nisi. Nam et sodales lorem. Nunc non luctus dui. Nam pellentesque mollis ligula, vestibulum sodales lacus dignissim nec. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec porttitor sollicitudin sapien at viverra. Nunc vel nisl malesuada eros tempus consequat. Aliquam scelerisque eleifend urna, vel convallis mi sollicitudin et. Cras ullamcorper massa et massa bibendum pharetra luctus felis suscipit. Donec ultricies lobortis placerat. Donec cursus, dui sed accumsan sodales, nibh purus luctus erat, in hendrerit nulla diam a turpis. Curabitur consectetur faucibus velit, vel hendrerit nulla facilisis at.
+                p
+                    | Proin in ultricies velit. Ut vel enim leo. Donec eget facilisis nisi. Phasellus vel tellus ac ante facilisis viverra. In ipsum felis, suscipit sit amet cursus ut, tincidunt nec magna. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed ut tortor et purus pharetra auctor quis sit amet lorem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus laoreet, lectus at hendrerit porta, tellus tortor malesuada eros, et gravida nunc arcu ac lorem. Ut arcu nulla, ultrices id lobortis id, pretium sed massa.
+                p
+                    | Cras sem tellus, interdum a accumsan quis, semper non ante. Vivamus laoreet lectus in diam porttitor sagittis vel sit amet tortor. Cras a lectus ac nunc eleifend volutpat. Aenean nec fermentum enim. Integer ornare facilisis ligula ac eleifend. Maecenas a tincidunt leo. Nunc non ipsum vel metus porttitor pretium nec in mi. Aliquam hendrerit volutpat lorem eu aliquet. Nam non leo eget augue pharetra suscipit. Sed non odio eget quam placerat elementum.
+                p
+                    | Etiam nec sapien sit amet lectus consectetur euismod non non magna. Aenean magna mauris, lacinia eget gravida nec, sollicitudin at diam. Suspendisse urna augue, dignissim sed vestibulum at, iaculis eget erat. Suspendisse congue enim nec risus ultricies sit amet dignissim elit vestibulum. Donec tincidunt convallis sollicitudin. Praesent nec quam nisl. Suspendisse magna velit, auctor vel molestie ac, feugiat quis nunc. Donec sed libero at metus lacinia porttitor. In nec velit libero, ut consequat lectus. Nulla facilisi. Cras non nisl at orci commodo volutpat feugiat et nibh. Fusce rhoncus, ipsum non blandit gravida, nisl sem suscipit magna, sed fermentum erat ligula a nisl. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+                p
+                    br
+                    br
+                    br
     hr
     div
         h3 Hey maybe you like this stuff?

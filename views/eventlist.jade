@@ -1,42 +1,34 @@
-include partials/head
-div.yui3-g
-    div.yui3-u-1-24
-    div.yui3-u-11-12
-        div.title
-            h1.title=title
-    div.yui3-u-1-24
-div.yui3-g
-    div.yui3-u-3-8
-        div.event_left
-            div.column_left_content
-                div.filters
-                    p This is where filters go
-                    form(method="GET")
-                        p City
-                            input(type="text", name="city")
-                        p Date
-                            input(type="text", name="date")
-                        p Host
-                            input(type="text", name="creator")
-                        p Free Seats
-                            input(type="text", name="seats")
-                        p
-                            input(type="submit", value="Filter")
-    div.yui3-u-1-24
-    div.yui3-u-7-12
-        div.event_right
-            div.column_right_content
-                each event in events
-                    div
-                        a(href='event/' + event._id)=event.title
-                        p=event.date + " " + event.time
-                        p=event.city + " " + event.state
-                if (events.length == 0)
-                    p There doesn't seem to be anything here
-                p= "Page " + page + " in groups of " + limit
-                a(href="/event/create") Create an Event
-                    
-                    
-    
-div.spacer
-include partials/foot
+extends layout
+block prepend content
+    .title
+        h1.title=title
+    .hero-unit
+        a.btn.btn-primary.btn-large(href="/event") Create an Event
+    .filters
+        form(method="GET")
+            p City
+                input(type="text", name="city")
+            p Date
+                input(type="text", name="date")
+            p Host
+                input(type="text", name="creator", value=)
+            p
+                input(type="submit", value="Filter")
+    .row
+        h1.span12 Browse dinners
+        each event in events
+            .span4
+                a(href='event/' + event._id)
+                    if(event.picture)
+                        img(src=event.picture, width="370px", height="260px")
+                    else
+                        img(src='/graphics/370x260')
+                h2
+                    a(href='event/' + event._id)=event.title
+                p=event.date + " " + event.time
+                p=event.city + " " + event.state
+                p=event.comment.substring(0,140)
+    if (events.length == 0)
+        p There doesn't seem to be anything here
+    p= "Page " + page + " in groups of " + limit
+    a(href="/event") Create an Event

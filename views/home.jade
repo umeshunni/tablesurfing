@@ -16,14 +16,17 @@ block prepend content
         .carousel-inner
             each event, index in events
                 - if (event._creator==undefined) event._creator = {}
-                div(class= 'item ' + (index == 0) ? 'active' : '')
+                div(class= (index == 0) ? 'item active' : 'item')
                     //
                          Feature component 
                     .row
                         .span8
                             h2
                                 a(href='/event/' + event._id) #{event.title}
-                            img(src='/graphics/770x550')
+                            if(event.picture)
+                                img(src=event.picture, width="770px", height="550px")
+                            else
+                                img(src='/graphics/770x550')
                         .span4
                             h2
                                 a(href='/user/' + event._creator._id) #{(event._creator) ? event._creator.name : "Nameless"}
@@ -32,7 +35,10 @@ block prepend content
                             ul.thumbnails
                                 li.span3
                                     .thumbnail
-                                        img(src='/graphics/260x260', alt='')
+                                        if(event._creator.picture)
+                                            img(src=event._creator.picture, alt='')
+                                        else
+                                            img(src='/graphics/260x260', alt='')
                                         .caption
                                             h4 #{event._creator.name}
                                             p
@@ -50,7 +56,7 @@ block prepend content
                                             span.badge #{event.seats - event._guests.length}
                                             | seats left
                                         each guest in event._guests
-                                            img.rightmargin(src=guest.picture)
+                                            img.rightmargin(width="40", height="40", src=guest.picture)
                                         - for (var i=0; i < event.seats - event._guests.length; i++)
                                             img.rightmargin(src='/graphics/40x40')
         a.carousel-control.left(href='#myCarousel', data-slide='prev') ‹
@@ -79,7 +85,7 @@ block prepend content
         h1 Want to Host A Meal?
         p All you have to do is sign up blah blah. It's easy.
         p
-            a.btn.btn-primary.btn-large Get started »
+            a.btn.btn-primary.btn-large(href="/event") Get started »
     hr
     .hero-unit
         h1 Help us out

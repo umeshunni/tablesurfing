@@ -123,12 +123,14 @@ app.get('/user', ensureAuthenticated, user.get)
 app.post('/user', ensureAuthenticated, user.update)
 
 // ****** Event ******
-app.get('/event', event.get)
-app.post('/event', ensureAuthenticated, event.update)
-app.get('/event/create', ensureAuthenticated, event.create)
+app.get('/event', ensureAuthenticated, event.get)
+app.post('/event', ensureAuthenticated, event.post)
 app.get('/event/:id', event.get_id)
+app.post('/event/:id', event.post_id)
 app.get('/event/:id/join', ensureAuthenticated, event.join)
 app.post('/event/:id/guest', ensureAuthenticated, event.post_id_guest)
+
+app.get('/events', event.list)
 
 
 app.listen(port, function(){
@@ -138,7 +140,14 @@ app.listen(port, function(){
 function ensureAuthenticated(req, res, next) {
     var auth = req.session.auth
     req.session.return_path = req.url
-    if ( auth && auth.loggedIn ) { return next(); }
-	res.redirect('/login');
+    if ( auth && auth.loggedIn ) { 
+        User.findOne({"facebook": auth.facebook.user.id}, function(err, account){
+            req.session.account = account
+            return next(); 
+        })
+    }
+    else{
+        res.redirect('/login');
+    }
 }
 
