@@ -35,32 +35,75 @@ everyauth.everymodule
 // .appId('258022404298399')
 // .appSecret('16d903518f272e53cff4949748abe7d2')
 
+function handleLogin(session, accessToken, accessTokenExtra, userMetadata){
+    var id = userMetadata.id;
+    var promise = this.Promise();
+    User.findOne({ facebook: id}, function(err, result) {
+        var user;
+        if(!result) {
+            user = new User();
+            user.facebook = id;
+            user.name = userMetadata.name;
+            user.picture = userMetadata.picture;
+            user.email = userMetadata.email;
+            user.save();
+        } else {
+            user = result;
+        }
+        promise.fulfill(user);
+    });
+    return promise;
+}
 
 everyauth.facebook
-.appId('258022404298399')
-.appSecret('16d903518f272e53cff4949748abe7d2')
+.appId('419312468089420')
+.appSecret('6f1c51f6ea13cf58c9f42d1c1feb2bac')
 .fields('id,name,email,picture,location')
-.findOrCreateUser( function(session, accessToken, accessTokenExtra, fbUserMetadata){
-	var id = fbUserMetadata.id;
-	var promise = this.Promise();
-	User.findOne({ facebook: id}, function(err, result) {
+.findOrCreateUser( function (session, accessToken, accessTokenExtra, userMetadata){
+    var id = userMetadata.id;
+    var promise = this.Promise();
+    User.findOne({ facebook: id}, function(err, result) {
         var user;
-		if(!result) {
-			user = new User();
-			user.facebook = id;
-			user.name = fbUserMetadata.name;
-			user.picture = fbUserMetadata.picture;
-			user.email = fbUserMetadata.email;
-			user.save();
-		} else {
-			user = result;
-		}
-		promise.fulfill(user);
-	});
-	return promise;
-})
+        if(!result) {
+            user = new User();
+            user.facebook = id;
+            user.name = userMetadata.name;
+            user.picture = userMetadata.picture;
+            user.email = userMetadata.email;
+            user.save();
+        } else {
+            user = result;
+        }
+        promise.fulfill(user);
+    });
+    return promise;
+} )
 .redirectPath('/last');
 
+everyauth.twitter
+  .consumerKey('uA06yZhNfwHv7ntaK9YAg')
+  .consumerSecret('rKezWLcbf1ysQ889phi12xCNft9yOmjKOVM8o4Xi24')
+  .findOrCreateUser( function (session, accessToken, accessTokenExtra, userMetadata){
+    console.log(userMetadata)
+    console.log(accessToken)
+    var id = userMetadata.id;
+    var promise = this.Promise();
+    User.findOne({ twitter: id}, function(err, result) {
+        var user;
+        if(!result) {
+            user = new User();
+            user.twitter = id;
+            user.name = userMetadata.name;
+            user.picture = userMetadata.profile_image_url;
+            user.save();
+        } else {
+            user = result;
+        }
+        promise.fulfill(user);
+    });
+    return promise;
+} )
+  .redirectPath('/last');
 
 
 var app = module.exports = express.createServer();

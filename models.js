@@ -5,6 +5,7 @@ var Schema = mongoose.Schema
 var User = new Schema({
     id              : ObjectId
   , facebook        : String
+  , twitter        : String
   , created         : {type: String, default: Date.now}
   , name            : {type: String}
   , tagline         : {type: String}

@@ -18,7 +18,7 @@ exports.update = function(req, res){
     var body = req.body
     var auth = req.session.auth
     var id = ""
-    if (auth && auth.facebook.user)
+    if (req.user)
         var id = req.user._id
     req.body.phone = twilio.phoneUS(req.body.phone)
     if(!req.body.notify) req.body.notify = []
@@ -56,6 +56,6 @@ exports.view = function (req, res) {
     // If logged in, profile
     User.findOne({_id: id}, function(err, result){
         if(err) res.send(err, 400)
-        res.render(__dirname + '/../views/user.jade', {title: "User Profile", person: result, edit:"false"});
+        res.render(__dirname + '/../views/user.jade', {title: "User Profile", user: result, edit:"false"});
     })
 }
