@@ -35,29 +35,9 @@ everyauth.everymodule
 // .appId('258022404298399')
 // .appSecret('16d903518f272e53cff4949748abe7d2')
 
-function handleLogin(session, accessToken, accessTokenExtra, userMetadata){
-    var id = userMetadata.id;
-    var promise = this.Promise();
-    User.findOne({ facebook: id}, function(err, result) {
-        var user;
-        if(!result) {
-            user = new User();
-            user.facebook = id;
-            user.name = userMetadata.name;
-            user.picture = userMetadata.picture;
-            user.email = userMetadata.email;
-            user.save();
-        } else {
-            user = result;
-        }
-        promise.fulfill(user);
-    });
-    return promise;
-}
-
 everyauth.facebook
-.appId('419312468089420')
-.appSecret('6f1c51f6ea13cf58c9f42d1c1feb2bac')
+.appId('258022404298399')
+.appSecret('16d903518f272e53cff4949748abe7d2')
 .fields('id,name,email,picture,location')
 .findOrCreateUser( function (session, accessToken, accessTokenExtra, userMetadata){
     var id = userMetadata.id;
