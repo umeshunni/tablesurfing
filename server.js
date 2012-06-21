@@ -8,10 +8,10 @@ var express = require('express')
   , routes = require('./routes')
   , mongoose = require('mongoose')
   , twilio = require('./twilio')
-  , mandrill = require('mandrill')
-  , everyauth = require('everyauth');
+  , everyauth = require('everyauth')
+  , config = require('./config');
 
-mandrill.call({'key':'9cac9ade-0541-42cf-80d8-bbcc48338bf7'});
+
 
 //mongoose.connect("mongo://localhost/tablesurfing"); // Old and busted
 mongoose.connect("mongodb://nodeuser:oompabeard@staff.mongohq.com:10066/tablesurfing"); // New hotness
@@ -36,8 +36,8 @@ everyauth.everymodule
 // .appSecret('16d903518f272e53cff4949748abe7d2')
 
 everyauth.facebook
-.appId('258022404298399')
-.appSecret('16d903518f272e53cff4949748abe7d2')
+.appId('419312468089420')
+.appSecret('6f1c51f6ea13cf58c9f42d1c1feb2bac')
 .fields('id,name,email,picture,location')
 .findOrCreateUser( function (session, accessToken, accessTokenExtra, userMetadata){
     var id = userMetadata.id;
@@ -171,11 +171,17 @@ app.listen(port, function(){
 
 function ensureAuthenticated(req, res, next) {
     var auth = req.session.auth
-    req.session.return_path = req.url
     if ( auth && auth.loggedIn ) { 
-        return next(); 
+        console.log(req.route.path)
+        if(!user.email && req.route.path != '/user'){
+            res.redirect('/user?missing=email')
+        }
+        else{
+            return next(); 
+        }
     }
     else{
+        req.session.return_path = req.url
         res.redirect('/login');
     }
 }

@@ -9,7 +9,7 @@
 	  , "mongoose": ">= 2.6.4"
 	  , "facebook":">= 0.0.3"
 	  , "everyauth":"git://github.com/bnoguchi/everyauth.git"
-	  , "mandrill":">= 0.1.0"
+	  , "mandrill":"git://github.com/smashcubed/mandrill-node.git"
     , "connect":"1.8.7"
     , "knox":">= 0.0.9"
   }

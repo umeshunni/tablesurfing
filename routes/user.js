@@ -7,9 +7,8 @@ var User = mongoose.model("User", User);
 
 // ****** User Profile / Signup / Login ******
 exports.get = function (req, res) {
-    var auth = req.session.auth
     // If logged in, profile
-    res.render(__dirname + '/../views/user.jade', {title: "Profile", user: req.user, edit: "true"});
+    res.render(__dirname + '/../views/user.jade', {title: "Profile", user: req.user, edit: "true", missing:req.query.missing});
 }
 
 // ****** User Update ******
