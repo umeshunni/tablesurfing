@@ -84,8 +84,6 @@ everyauth.twitter
   .consumerKey('uA06yZhNfwHv7ntaK9YAg')
   .consumerSecret('rKezWLcbf1ysQ889phi12xCNft9yOmjKOVM8o4Xi24')
   .findOrCreateUser( function (session, accessToken, accessTokenExtra, userMetadata){
-    console.log(userMetadata)
-    console.log(accessToken)
     var id = userMetadata.id;
     var promise = this.Promise();
     User.findOne({ twitter: id}, function(err, result) {
