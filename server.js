@@ -6,7 +6,6 @@ var port = process.env.PORT || 3000
 
 var express = require('express')
   , routes = require('./routes')
-  , hashlib = require('hashlib')
   , mongoose = require('mongoose')
   , twilio = require('./twilio')
   , mandrill = require('mandrill')

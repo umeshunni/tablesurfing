@@ -7,7 +7,6 @@
     , "jade": ">= 0.0.1"
 	  , "mongodb": ">= 0.9.6-7"
 	  , "mongoose": ">= 2.6.4"
-	  , "hashlib": ">= 1.0.1"
 	  , "facebook":">= 0.0.3"
 	  , "everyauth":"git://github.com/bnoguchi/everyauth.git"
 	  , "mandrill":">= 0.1.0"
