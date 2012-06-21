@@ -16,22 +16,22 @@ mandrill.call({'key':config.mandrill.key});
 exports.home = function (req, res) {
     console.log(config.mandrill.key)
     
-    var message = {
-            "html":"<p>This is the body</p>"
-            , "subject":"Mandrill subject"
-            , "from_email":"noreply@tablesurfing.org"
-            , "to":[{"email":"smashcubed@gmail.com"}]
-            , "tags":["test"]
-        }
+    // var message = {
+    //         "html":"<p>This is the body</p>"
+    //         , "subject":"Mandrill subject"
+    //         , "from_email":"noreply@tablesurfing.org"
+    //         , "to":[{"email":"smashcubed@gmail.com"}]
+    //         , "tags":["test"]
+    //     }
 
-    mandrill.call({
-        "type":"messages"
-        ,"call":"send"
-        ,'message':message
-    }, function(data){
-            console.log(data);
-        }
-    );
+    // mandrill.call({
+    //     "type":"messages"
+    //     ,"call":"send"
+    //     ,'message':message
+    // }, function(data){
+    //         console.log(data);
+    //     }
+    // );
 
     // If there is a user, get that object, render a partial
     // Get 3 events for the data object
