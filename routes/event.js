@@ -117,14 +117,14 @@ exports.join = function (req, res) {
                 , "tags":["event", "join"]
             }
 
-        // mandrill.call({
-        //     "type":"messages"
-        //     ,"call":"send"
-        //     ,'message':message
-        // }, function(data){
-        //         console.log(data);
-        //     }
-        // );
+        mandrill.call({
+            "type":"messages"
+            ,"call":"send"
+            ,'message':message
+        }, function(data){
+                console.log(data);
+            }
+        );
 
         res.redirect('/event/' + id)
         //res.render(__dirname + '/views/event.jade', {title: "Add Event", event: event, user: req.user});

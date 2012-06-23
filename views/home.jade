@@ -49,15 +49,15 @@ block prepend content
                                                 a.btn(href='/user/' + event._creator._id) Contact Chef
                                     div
                                         h3
-                                            - if(!event._guests) event._guests = []
-                                            span.badge.badge-info #{event._guests.length}
+                                            - if(!event.guests) event.guests = []
+                                            span.badge.badge-info #{event.guests.length}
                                             | attending
                                         p
-                                            span.badge #{event.seats - event._guests.length}
+                                            span.badge #{event.seats - event.guests.length}
                                             | seats left
-                                        each guest in event._guests
-                                            img.rightmargin(width="40", height="40", src=guest.picture)
-                                        - for (var i=0; i < event.seats - event._guests.length; i++)
+                                        each guest in event.guests
+                                            img.rightmargin(width="40", height="40", src=guest._user.picture)
+                                        - for (var i=0; i < event.seats - event.guests.length; i++)
                                             img.rightmargin(src='/graphics/40x40')
         a.carousel-control.left(href='#myCarousel', data-slide='prev') ‹
         a.carousel-control.right(href='#myCarousel', data-slide='next') ›
