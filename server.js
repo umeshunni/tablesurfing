@@ -160,7 +160,7 @@ app.post('/event', ensureAuthenticated, event.post)
 app.get('/event/:id', event.get_id)
 app.post('/event/:id', event.post_id)
 app.get('/event/:id/join', ensureAuthenticated, event.join)
-app.post('/event/:id/guest', ensureAuthenticated, event.post_id_guest)
+app.post('/event/:eventId/guest/:guestId/:approval', ensureAuthenticated, event.post_id_guest)
 
 app.get('/events', event.list)
 
@@ -172,8 +172,7 @@ app.listen(port, function(){
 function ensureAuthenticated(req, res, next) {
     var auth = req.session.auth
     if ( auth && auth.loggedIn ) { 
-        console.log(req.route.path)
-        if(!user.email && req.route.path != '/user'){
+        if(!req.user.email && req.route.path != '/user'){
             res.redirect('/user?missing=email')
         }
         else{

@@ -2,6 +2,8 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema
   , ObjectId = Schema.ObjectId;
 
+
+
 var User = new Schema({
     id              : ObjectId
   , facebook        : String
@@ -23,6 +25,12 @@ var User = new Schema({
   , photos          : [{type: String}]
 })
 
+var Guest = new Schema({
+  id : ObjectId
+  , _user:{ type: Schema.ObjectId, ref: 'User' } 
+  , approval: {type: String, default: 'pending'}
+})
+
 var Event = new Schema({
     id        : ObjectId
   , title     : String
@@ -36,12 +44,11 @@ var Event = new Schema({
   , comment   : String
   , seats      : {type: Number, default: 1}
   , cost       : String
-  , _guests    : [{ type: Schema.ObjectId, ref: 'User' }]
+  , guests    : [Guest]
   , photos: [{type : String}]
   , picture: String
 });
 
-
-
 mongoose.model("Event", Event);
 mongoose.model("User", User);
+mongoose.model("Guest", Guest);

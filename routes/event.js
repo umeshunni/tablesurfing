@@ -1,10 +1,14 @@
 var mongoose = require('mongoose')
  , knox = require('knox')
- , config = require('../config.js')
+ , mandrill = require('mandrill')
+, config = require('../config.js')
 
 var Event = mongoose.model("Event", Event);
 var User = mongoose.model("User", User);
+var Guest = mongoose.model("Guest", Guest);
 
+
+mandrill.call({'key':config.mandrill.key});
 
 // ****** New Event Form ******
 exports.get = function(req, res){
@@ -55,7 +59,7 @@ exports.get_id = function (req, res) {
     var id = req.params.id;
 
     // If logged in, profile
-    Event.findOne({_id: id}).populate('_creator').populate('_guests').exec(function(err, event){
+    Event.findOne({_id: id}).populate('_creator').populate('guests._user').exec(function(err, event){
         if(err) res.send(err, 400)
         res.render(__dirname + '/../views/event.jade', {title: "Event Info", event: event, user: req.user});
     })
@@ -96,12 +100,32 @@ exports.join = function (req, res) {
     Event.findOne({_id: id}).populate('_creator').exec(function(err, event){
         if(err) res.send(err, 400)
         if(err) res.send(err, 400)
-        if(event._guests.indexOf(req.user._id) == -1)
-            event._guests.push({_id: req.user._id, name: req.user.name, approval: 'pending'})
+
+        var g = new Guest()
+        g._user = req.user._id
+        g.save()
+        event.guests.push(g)
         event.save()
         // Notify the host through their method
         // if(event._creator.notify.indexOf("sms") != -1)
         //     twilio.sendText(event._creator.phone, req.user.name + " has asked to join your event " + event.title)
+        var message = {
+                "html":"<p>" + req.user.name + " has joined your event: " + event.title + " </p>"
+                , "subject":"Placemat - Person joined"
+                , "from_email":"noreply@tablesurfing.org"
+                , "to":[{"email":event._creator.email}]
+                , "tags":["event", "join"]
+            }
+
+        // mandrill.call({
+        //     "type":"messages"
+        //     ,"call":"send"
+        //     ,'message':message
+        // }, function(data){
+        //         console.log(data);
+        //     }
+        // );
+
         res.redirect('/event/' + id)
         //res.render(__dirname + '/views/event.jade', {title: "Add Event", event: event, user: req.user});
     })
@@ -110,23 +134,18 @@ exports.join = function (req, res) {
 // ****** Confirm/Deny a guest ******
 exports.post_id_guest = function(req, res){
     // Updates the guest object
-    var body = req.body
-    User.find({_id:req.session.id}, function(err, host){ // Get the host
+    var eventId = req.params.eventId
+    var guestId = req.params.guestId
+    var approval = req.params.approval
+    Event.findById(eventId, function(err, event){
         if(err) res.send(err, 400)
-        Event.find({_id:req.params.id}, function(err, event){
-            if(err)res.send(err, 400)
-            if(event.creator != host._id) res.send("Unauthorized", 401)
-            
-            event.guests = body
+        if(!event._creator.equals(req.user._id)) res.send("Unauthorized", 401)
+        else{
+            event.guests.id(guestId).approval = approval
             event.save()
-            // This may not be necessary
-            // event.save(function(err){
-            //     if(err) res.send(err, 400)
-            // });
-            res.render(__dirname + '/../views/event.jade', {title: "Guests", event: event, user: req.user});
-        })
+            res.redirect('/event/' + eventId)
+        }
     })
-
 }
 
 // ****** Event List/Search ******
@@ -134,7 +153,7 @@ exports.list = function (req, res) {
     // GET filters: city, creator, preference, date
     var filter = {}
     if(req.query){
-        if(req.query.creator) filter.creator = req.query.creator
+        if(req.query.creator) filter._creator = req.query.creator
         if(req.query.preference) filter.preference = req.query.preference.split(',')
         if(req.query.date) filter.date = req.query.date
         if(req.query.city) filter.city = req.query.city
