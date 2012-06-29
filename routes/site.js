@@ -15,7 +15,7 @@ exports.home = function (req, res) {
     // Get 3 events for the data object
     Event.find({}).limit(4).populate('_creator').populate('guests._user').exec(function(err, events){
         if(err) res.send(err, 400)
-        res.render(__dirname + '/../views/home.jade', {title: "Home", events: events});
+        res.render(__dirname + '/../views/home.jade', {title: "Home", events: events, user:req.user});
     })
 }
 
@@ -25,13 +25,16 @@ exports.last = function(req, res){
 }
 
 exports.login = function(req, res){
-    res.render(__dirname + '/../views/signup.jade', {title: "Sign Up"});
+    if(req.user) 
+        res.redirect('/user')
+    else
+        res.render(__dirname + '/../views/signup.jade', {title: "Sign Up"});
 }
 
 exports.about = function(req, res){
-    res.render(__dirname + '/../views/about.jade', {title: "About"});
+    res.render(__dirname + '/../views/about.jade', {title: "About", user:req.user});
 }
 
 exports.contact = function(req, res){
-    res.render(__dirname + '/../views/contact.jade', {title: "Contact"});
+    res.render(__dirname + '/../views/contact.jade', {title: "Contact", user:req.user});
 }

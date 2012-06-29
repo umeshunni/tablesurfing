@@ -8,7 +8,17 @@ var User = mongoose.model("User", User);
 // ****** User Profile / Signup / Login ******
 exports.get = function (req, res) {
     // If logged in, profile
-    res.render(__dirname + '/../views/user.jade', {title: "Profile", user: req.user, edit: "true", missing:req.query.missing});
+    res.render(__dirname + '/../views/user.jade', {title: "Profile", data: req.user, user:req.user, edit: "true", missing:req.query.missing});
+}
+
+// ****** A User Profile ******
+exports.view = function (req, res) {
+    var id = req.params.id;
+    // If logged in, profile
+    User.findOne({_id: id}, function(err, result){
+        if(err) res.send(err, 400)
+        res.render(__dirname + '/../views/user.jade', {title: "User Profile", data: result, user:req.user, edit:"false", missing:null});
+    })
 }
 
 // ****** User Update ******
@@ -49,12 +59,3 @@ exports.update = function(req, res){
 
 }
 
-// ****** User Profile ******
-exports.view = function (req, res) {
-    var id = req.params.id;
-    // If logged in, profile
-    User.findOne({_id: id}, function(err, result){
-        if(err) res.send(err, 400)
-        res.render(__dirname + '/../views/user.jade', {title: "User Profile", user: result, edit:"false"});
-    })
-}

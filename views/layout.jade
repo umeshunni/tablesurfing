@@ -9,6 +9,7 @@ html.js.flexbox.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqld
         meta(name='author', content='')
         meta(name='viewport', content='width=device-width')
         link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+        link(href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css", rel="stylesheet", type="text/css")
         style
             body {
             padding-top: 60px;
@@ -17,8 +18,14 @@ html.js.flexbox.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqld
         link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.min.css')
         link(rel='stylesheet', href='/stylesheets/style.css')
         block scripts
+            script(src='//ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js')
+            script(src='//ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js')
             script(src='/javascripts/ga.js')
             script(src='/javascripts/modernizr-2.5.3-respond-1.1.0.min.js')
+            script
+                $(document).ready(function() {
+                    $("#datepicker").datepicker();
+                });
     link(rel='stylesheet', type='text/css', href='data:text/css,')
     body
         .navbar.navbar-fixed-top
@@ -35,18 +42,25 @@ html.js.flexbox.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqld
                             - for item, path in items
                                 li(class= (item == title) ? 'active' : '')
                                     a(href= "/" + path)= item
+                    ul.nav.pull-right
+                        if(typeof user != 'undefined')
+                            li 
+                                a(href="/user") #{user.name}
+                        else
+                            li
+                                a(href="/login") Login
         .container
             block content
             footer
                 p © Placemat 2012
-        script(src='/javascripts/jquery.min.js')
+        //- script(src='/javascripts/jquery.min.js')
         script
             window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\\/script>')
         script(src='/javascripts/bootstrap.min.js')
         script(src='/javascripts/plugins.js')
         script(src='/javascripts/script.js')
         script
-            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            var _gaq=[['_setAccount','UA-31875087-2'],['_trackPageview']];
             (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
             g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
             s.parentNode.insertBefore(g,s)}(document,'script'));

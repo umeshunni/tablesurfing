@@ -63,8 +63,10 @@ block prepend content
                                 img.rightmargin(width="40", height="40", src=guest._user.picture)
                                 if(user && event._creator._id.equals(user._id))
                                     span=guest.approval
+                                    br
                                 else if(user && guest._user._id.equals(user._id))
                                     span=guest.approval
+                                    br
                             - for (var i=0; i < event.seats - event.guests.length; i++)
                                 img.rightmargin(src='/graphics/40x40')
         .span12

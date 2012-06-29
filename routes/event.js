@@ -1,6 +1,8 @@
 var mongoose = require('mongoose')
  , knox = require('knox')
  , mandrill = require('mandrill')
+ , jade = require('jade')
+ , fs = require('fs')
 , config = require('../config.js')
 
 var Event = mongoose.model("Event", Event);
@@ -15,7 +17,7 @@ exports.get = function(req, res){
     
     User.findOne({_id:req.user._id}, function (err, host){
         if(err) res.send(err, 400)
-        res.render(__dirname + '/../views/eventcreate.jade', {title: "Create Event", host: host});
+        res.render(__dirname + '/../views/eventcreate.jade', {title: "Create Event", host: host, user:req.user});
     })
 
     
@@ -107,11 +109,14 @@ exports.join = function (req, res) {
         event.guests.push(g)
         event.save()
         // Notify the host through their method
-        // if(event._creator.notify.indexOf("sms") != -1)
-        //     twilio.sendText(event._creator.phone, req.user.name + " has asked to join your event " + event.title)
+        if(event._creator.notify.indexOf("sms") != -1)
+            twilio.sendText(event._creator.phone, req.user.name + " has asked to join your event " + event.title)
+        
+        // Notify the host
+        var template = jade.compile(fs.readFileSync(__dirname + "/../views/email-join.jade"), "")
         var message = {
-                "html":"<p>" + req.user.name + " has joined your event: " + event.title + " </p>"
-                , "subject":"Placemat - Person joined"
+                "html":template({user:req.user, event: event})
+                , "subject":"Placemat - Person joined your event " + event.title
                 , "from_email":"noreply@tablesurfing.org"
                 , "to":[{"email":event._creator.email}]
                 , "tags":["event", "join"]
@@ -137,12 +142,36 @@ exports.post_id_guest = function(req, res){
     var eventId = req.params.eventId
     var guestId = req.params.guestId
     var approval = req.params.approval
-    Event.findById(eventId, function(err, event){
+    Event.findById(eventId).populate("_creator").exec(function(err, event){
         if(err) res.send(err, 400)
         if(!event._creator.equals(req.user._id)) res.send("Unauthorized", 401)
         else{
-            event.guests.id(guestId).approval = approval
+            var guest = event.guests.id(guestId)
+            guest.approval = approval
             event.save()
+            // Notify the guest
+            if(event._creator.notify.indexOf("sms") != -1)
+                twilio.sendText(event._creator.phone, req.user.name + " has asked to join your event " + event.title)
+            
+            // Notify the host
+            var template = jade.compile(fs.readFileSync(__dirname + "/../views/email-approval.jade"), "")
+            var message = {
+                    "html":template({user:guest, event: event})
+                    , "subject":"Placemat - Regarding event: " + event.title
+                    , "from_email":"noreply@tablesurfing.org"
+                    , "to":[{"email":guest.email}]
+                    , "tags":["event", "approval", approval]
+                }
+
+            mandrill.call({
+                "type":"messages"
+                ,"call":"send"
+                ,'message':message
+            }, function(data){
+                    console.log(data);
+                }
+            );
+
             res.redirect('/event/' + eventId)
         }
     })
@@ -165,6 +194,6 @@ exports.list = function (req, res) {
         .skip(skip)
         .limit(limit)
         .exec(function(err, events){
-        res.render(__dirname + '/../views/eventlist.jade', {title: "Events", events: events, page: (skip/limit + 1), limit: limit});
+        res.render(__dirname + '/../views/eventlist.jade', {title: "Events", events: events, page: (skip/limit + 1), limit: limit, user:req.user});
     })
 }

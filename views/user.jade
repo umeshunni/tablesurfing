@@ -5,7 +5,7 @@ block prepend content
             h3
                 | You must fill in the following fields: #{missing}
     form(method="POST", enctype="multipart/form-data")
-        input(type="hidden", value=user.name, name="name")
+        input(type="hidden", value=data.name, name="name")
         .row
             .span8
                 div.location
@@ -14,13 +14,13 @@ block prepend content
                         br
                         if (edit=="true") 
                             p City
-                                input(type="text", value=user.city, name="city", placeholder="city")
+                                input(type="text", value=data.city, name="city", placeholder="city")
                             p State
-                                input(type="text", value=user.state, name="state", placeholder="State")
+                                input(type="text", value=data.state, name="state", placeholder="State")
                             p Zip code
-                                input(type="text", value=user.zipcode, name="zipcode", placeholder="zip")
+                                input(type="text", value=data.zipcode, name="zipcode", placeholder="zip")
                         else
-                            span=user.city + ", " + user.state + " " + user.zipcode
+                            span=data.city + ", " + data.state + " " + data.zipcode
 
                 div.contact
                     p
@@ -28,56 +28,54 @@ block prepend content
                         br
                         if (edit=="true")
                             p Phone
-                                input(type="text", value=user.phone, name="phone", placeholder="888-999-0000")
+                                input(type="text", value=data.phone, name="phone", placeholder="888-999-0000")
                             br
-                            input(type="checkbox", name="notify", value="sms", checked=(user.notify.indexOf("sms")!=-1))
+                            input(type="checkbox", name="notify", value="sms", checked=(data.notify.indexOf("sms")!=-1))
                             span SMS Notifications
                         else
-                            span=user.phone
+                            span=data.phone
                     p
                         if (edit=="true")
-                            p Email
-                                input(type="text", value=user.email, name="email", placeholder="name@domain.com")
-                            br
-                            input(type="checkbox", name="notify", value="email", checked=(user.notify.indexOf("email")!=-1))
-                            span Email notifications
+                            p Email (Where you will receive notifications)
+                                input(type="text", value=data.email, name="email", placeholder="name@domain.com")
+                            
                         else
-                            span=user.phone
+                            span=data.phone
                 div.photos
                     h3 Photos
                     if (edit=="true") 
                         span edit
                 div.events
                     h2 
-                        a(href="/events?creator=" + user._id)
+                        a(href="/events?creator=" + data._id)
                             if(edit=="true")
-                                a(href="/events?creator=" + user._id) Your events
+                                a(href="/events?creator=" + data._id) Your events
                             else
-                                a(href="/events?creator=" + user._id) See Events hosted by this user
+                                a(href="/events?creator=" + data._id) See Events hosted by this user
                 if(edit=="true")
                     input(type='Submit', value='Save')
                         Save
             .span4
                 h2
-                    a(href='/user/' + user._id) #{user.name}
+                    a(href='/user/' + data._id) #{data.name}
                 p
-                    | #{user.city}, #{user.state}, #{user.zipcode}
+                    | #{data.city}, #{data.state}, #{data.zipcode}
                 .thumbnail
-                    if(user.picture)
-                        img(src=user.picture, width='260px', height='260px', alt='')
+                    if(data.picture)
+                        img(src=data.picture, width='260px', height='260px', alt='')
                     else
                         img(src='/graphics/260x260', alt='')
                     if (edit=="true")
                         h3 Change Picture
                             input(type="file", name="picture")
                         h3 Tagline
-                            input(type="text", value=user.tagline, name="tagline", placeholder="Yourself in a few words")
+                            input(type="text", value=data.tagline, name="tagline", placeholder="Yourself in a few words")
                         h3 Bio
-                            textarea(name="bio", class="input-xlarge", rows="3", placeholder="Tell us about yourself")= user.bio
+                            textarea(name="bio", class="input-xlarge", rows="3", placeholder="Tell us about yourself")= data.bio
                         br
-                        a.btn(href='/user/' + user._id, target="_blank") Preview
+                        a.btn(href='/user/' + data._id, target="_blank") Preview
                     else
                         .caption
-                            h4 #{user.tagline}
+                            h4 #{data.tagline}
                             p
-                                | #{user.bio}
+                                | #{data.bio}

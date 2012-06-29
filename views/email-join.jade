@@ -1,0 +1,18 @@
+h1 Placemat
+p #{event._creator.name},
+p 
+	| You have a pending guest at your table! 
+	a(href="http://placemat.azurewebsites.net/user/" + user._id) #{user.name}
+	|  has joined your event: 
+	a(href="http://placemat.azurewebsites.net/event/" + event._id) #{event.title}
+p You can accept this person into your event with the following link:
+p
+	a(href="http://placemat.azurewebsites.net/event/" + event._id + "/guest/" + user._id + "/approved") Confirm #{user.name}
+p 
+	| If you are unsure, perhaps you would like to 
+	a(href="mailto:" + user.email) contact #{user.name}
+	| first.
+p
+	| You may also choose to 
+	a(href="placemat.azurewebsites.net/event/" + event._id + "/guest/" + user._id + "/rejected") Reject #{user.name}
+p Thanks for using Placemat!
