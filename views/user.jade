@@ -13,6 +13,8 @@ block prepend content
                         h3 Location
                         br
                         if (edit=="true") 
+                            p Address (to be given to confirmed guests)
+                            input(type="text", value=data.address, name="address", placeholder="address")
                             p City
                                 input(type="text", value=data.city, name="city", placeholder="city")
                             p State

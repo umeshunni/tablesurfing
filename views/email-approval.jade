@@ -1,0 +1,14 @@
+h1 Placemat
+p #{event._creator.name},
+p 
+	| Your request to join the event 
+	a(href="http://placemat.azurewebsites.net/event/" + event._id) #{event.title}
+	| has been approved!
+p Here are the specific details to this event
+p Where: #{event._creator.address}
+br #{event.city}, #{event.state}
+p When: #{event.date}, #{event.time}
+p If you have any questions, feel free to 
+	a(href="mailto:" + event._creator.email) Contact the host
+	| .
+p Thanks for using Placemat!
