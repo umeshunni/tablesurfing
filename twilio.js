@@ -21,7 +21,7 @@ exports.sendText = function(to, body, cb){
 	var req = https.request(options, function(res) {
 
         res.on('data', function(d) {
-            return cb(null, d);
+        	console.log(d)
         });
 	});
 

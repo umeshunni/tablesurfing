@@ -7,6 +7,9 @@ var User = mongoose.model("User", User);
 
 // ****** User Profile / Signup / Login ******
 exports.get = function (req, res) {
+    if(req.query.sms == "1")
+        twilio.sendText(req.user.phone, req.user.name + ", you set up your SMS notifications!  Have a cookie.")
+        
     // If logged in, profile
     res.render(__dirname + '/../views/user.jade', {title: "Profile", data: req.user, user:req.user, edit: "true", missing:req.query.missing});
 }

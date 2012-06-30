@@ -20,8 +20,7 @@ block prepend content
                 if(user && event._creator._id == user._id)
                     h3 Choose a different picture
                     input(type="file", name="picture")
-                    input(type='Submit', value='Save')
-                        Save
+                    input.btn(type='Submit', value='Save')
             .span4
                 h2
                     a(href='/user/' + event._creator._id) #{event._creator.name}

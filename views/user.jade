@@ -31,9 +31,17 @@ block prepend content
                         if (edit=="true")
                             p Phone
                                 input(type="text", value=data.phone, name="phone", placeholder="888-999-0000")
+                                if(data.phone)
+                                    a.btn(href="?sms=1") Test SMS
+                                else
+                                    .alert.alert-info Add a phone number to receive SMS notifications (Powered by 
+                                        a(href="http://www.twilio.com") Twilio
+                                        |)
                             br
                             input(type="checkbox", name="notify", value="sms", checked=(data.notify.indexOf("sms")!=-1))
-                            span SMS Notifications
+
+                            span  Receive SMS Notifications
+                            
                         else
                             span=data.phone
                     p
@@ -43,10 +51,6 @@ block prepend content
                             
                         else
                             span=data.phone
-                div.photos
-                    h3 Photos
-                    if (edit=="true") 
-                        span edit
                 div.events
                     h2 
                         a(href="/events?creator=" + data._id)
@@ -55,8 +59,7 @@ block prepend content
                             else
                                 a(href="/events?creator=" + data._id) See Events hosted by this user
                 if(edit=="true")
-                    input(type='Submit', value='Save')
-                        Save
+                    input.btn(type='Submit', value='Save') Save
             .span4
                 h2
                     a(href='/user/' + data._id) #{data.name}
