@@ -14,7 +14,8 @@ var express = require('express')
 
 
 //mongoose.connect("mongo://localhost/tablesurfing"); // Old and busted
-mongoose.connect("mongodb://nodeuser:oompabeard@staff.mongohq.com:10066/tablesurfing"); // New hotness
+//mongoose.connect("mongodb://nodeuser:oompabeard@staff.mongohq.com:10066/tablesurfing"); // New hotness
+mongoose.connect("mongodb://nodeuser:sUperm4rio@placematvm.cloudapp.net:27017/tablesurfing"); // And the newest
 require('./models.js');
 var User = mongoose.model("User", User);
 var Event = mongoose.model("Event", Event);
