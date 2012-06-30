@@ -41,16 +41,10 @@ block prepend content
                             input(type="checkbox", name="notify", value="sms", checked=(data.notify.indexOf("sms")!=-1))
 
                             span  Receive SMS Notifications
-                            
-                        else
-                            span=data.phone
                     p
                         if (edit=="true")
                             p Email (Where you will receive notifications)
                                 input(type="text", value=data.email, name="email", placeholder="name@domain.com")
-                            
-                        else
-                            span=data.phone
                 div.events
                     h2 
                         a(href="/events?creator=" + data._id)
